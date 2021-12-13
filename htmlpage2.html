@@ -1,0 +1,45 @@
+<html>
+    <head>
+        <title>Simple hello world</title>
+        <style>
+            .prompt {
+                font-size: 16px;
+                color: brown;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+            .container {
+                width: 50%;
+            }
+            .left-pane {
+                width: 50%;
+                float: left;
+            }
+            .right-pane {
+                width: 50%;
+                float: right;
+            }
+            .submit-name {
+                clear: both;
+            }
+        </style>
+    </head>
+<body>
+    <h1>Hello Node JS</h1>
+
+    <form method='GET' action="/json">
+        <div class="container">
+            <div class="prompt left-pane">
+                <span>Give us your firstname and get email address</span>
+            </div>
+            <div class="right-pane">
+                <input type="text" id="firstname" name="firstname" />
+            </div>
+        </div>
+        <div class="submit-name">
+            <input type="submit" value="get the email" />
+        </div>
+        </div>
+    </form>
+</body>
+</html>
