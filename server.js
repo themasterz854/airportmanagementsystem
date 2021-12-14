@@ -1,6 +1,7 @@
 // Requiring module
 var sql = require('mysql');
 var fs = require('fs');
+var path = require('path');
 //var http = require('http');
 var https = require('https');
 var privateKey  = fs.readFileSync('./key.pem', 'utf8');
@@ -19,17 +20,33 @@ var name;
 //var httpServer = http.createServer(app);
 var httpsServer = https.createServer(credentials, app);
 
+app.set('views', __dirname);
+app.set('view engine', 'ejs');
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 // Handling GET request
+var sqlcondata = {
+host: "localhost",
+user: "root",
+password: "Hellstar#92",
+database: "nodepractice"}
+var con = sql.createConnection(sqlcondata);
+con.connect(function(err){ if (err) throw err;
+  console.log("Connected to database " + sqlcondata["database"] + "!");
 app.use(function middleware(req, res, next) {
   var string = req.method + " " + req.path + " - " + req.ip;
   console.debug(string);
   next();
 });
 app.use(express.static(absolutepathofassets));
-
+app.get('/table1', function(req, res, next) {
+  var sql='SELECT * FROM customerdata';
+  con.query(sql, function (err, data, fields) {
+  if (err) throw err;
+  res.render('table1', { title: 'table', userData: data});
+});
+});
 app.get('/', (req, res) => {
     res.sendFile(absolutepathofhtmlfile);
 });
@@ -100,14 +117,6 @@ app.post('/name', function(req, res) {
   res.json({ name: string });
 });
 
-var con = sql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "Hellstar#92",
-  database: "nodepractice"
-});
-con.connect(function(err){ if (err) throw err;
-  console.log("Connected!");
  app.post('/', (req,res) => {
   var FN,LN,PASS,SEX,t,tp;
    FN = req.body.firstName;
