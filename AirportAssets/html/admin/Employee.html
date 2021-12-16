@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Employee</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script src="myjs.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+				<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Poppins">
+
+		<link rel="stylesheet" href="mycss.css">
+</head>
+<body>
+    <nav class="navbar navbar-inverse" style="border-radius:0px !important; margin:0;border: 0">
+        <div class="container-fluid">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>                       
+              </button>
+              <a class="navbar-brand" href="/Adminhome">Airline-X</a>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="/Adminhome">Home</a></li>
+                    <li><a href="/addArrivalFlight">Add Arival Flight</a></li>
+                    <li ><a href="/addDepartureFlight">Add Departure Flight</a></li>
+                    <li><a href="/Arrival">Arival Flight</a></li>
+                    <li ><a href="/Departure">Departure Flight</a></li>
+                    <li ><a href="/addEmployee">Add Employee Details</a></li>
+                    <li class="active"><a href="/Employee">Employee Details</a></li>
+                    
+                </ul>
+                
+                
+                
+            </div>	
+        </div>
+    </nav>
+
+    <div class="background-wrapper" style="background-image: url(/254361.jpg);">
+				
+        <!--header-->
+
+        <div class="col-sm-8 col-sm-offset-2">
+            <div class="panel-group">
+                  <div class="panel panel-default panel-transparent">
+                    <div class="panel-heading">
+                        <legend style="text-align: center;">Employee Details</legend>
+                    </div>
+
+                    <div class="panel-body">
+                <header>
+                    <h2>Employee Details</h2>
+                    <hr>
+                </header>
+
+
+                <div class="panel-body">
+                    <table class="table table-hover" style="color: black; font-size: 20px">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>DOB</th>
+                                <th>Age</th>
+                                <th>Gender</th>
+                                <th>SSN</th>
+                                <th>Phone No.</th>
+                                <th>Job type</th>
+                                <th>Edit/Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <%
+                            if(ArivalData.length!=0){
+                            var i=1;
+                            ArivalData.forEach(function(data){
+                            %>
+                            <tr>
+                                <td><%=i; %></td>
+                                <td><%=data.FirstName %></td>
+                                <td><%=data.LastName %></td>
+                                <td><%=data.DOB %></td>
+                                <td><%=data.Age %></td>
+                                <td><%=data.Gender %></td>
+                                <td><%=data.ESSN %></td>
+                                <td><%=data.PhoneNo %></td>
+                                <td><%=data.JobType %></td>
+                                <td><a href="/users/edit/<%=data.id%>">Edit</a></td>
+                                <td><a href="/users/delete/<%=data.id%>">Delete</a></td>
+                            </tr>
+                            <%  i++; }) %>
+                            <% } else{ %>
+                                <tr>
+                                    <td colspan="7">No Data Found</td>
+                                </tr>
+                            <% } %>
+                            </tbody>
+                        
+                  </table>
+                </div>
+                
+
+               
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>	
+</div>
+    </div>
+</body>
+</html>

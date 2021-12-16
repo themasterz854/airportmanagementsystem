@@ -11,7 +11,7 @@ h1 {
 
 /* id selector */
 #big{
-    font_size: 30px
+    font-size: 30px
 }
 /*class selector*/
 .blue{

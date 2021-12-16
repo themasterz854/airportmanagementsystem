@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Arival Flight</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script src="myjs.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+				<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Poppins">
+
+		<link rel="stylesheet" href="mycss.css">
+</head>
+<body>
+    <nav class="navbar navbar-inverse" style="border-radius:0px !important; margin:0;border: 0">
+        <div class="container-fluid">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>                       
+              </button>
+              <a class="navbar-brand" href="/Adminhome">Airline-X</a>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="/Adminhome">Home</a></li>
+                    <li><a href="/addArrivalFlight">Add Arival Flight</a></li>
+                    <li ><a href="/addDepartureFlight">Add Departure Flight</a></li>
+                    <li class="active"><a href="/Arrival">Arival Flight</a></li>
+                    <li  ><a href="/Departure">Departure Flight</a></li>
+                    <li ><a href="/addEmployee">Add Employee Details</a></li>
+                    <li ><a href="/Employee">Employee Details</a></li>
+                    
+                </ul>
+                
+                <div class="col-sm-8 col-sm-offset-2">
+                    <div class="panel-group">
+                          <div class="panel panel-default panel-transparent">
+                            <div class="panel-heading">
+                                <legend style="text-align: center;">Arival Flight Details</legend>
+                            </div>
+
+                            <div class="panel-body">
+                        <header>
+                            <h2>Arrival</h2>
+                            <hr>
+                        </header>
+
+
+                        <div class="panel-body">
+                            <table class="table table-hover" style="color: black; font-size: 20px">
+                                <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>Flight Code</th>
+                                        <th>Airline Name</th>
+                                        <th>from</th>
+                                        <th>Arival Date</th>
+                                        <th>Arival Time</th>
+                                    
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <%
+                                if(ArivalData.length!=0){
+                                var i=1;
+                                ArivalData.forEach(function(data){
+                                %>
+                                <tr>
+                                    <td><%=i; %></td>
+                                    <td><%=data.FlightCode %></td>
+                                    <td><%=data.Airline %></td>
+                                    <td><%=data.From %></td>
+                                    <td><%=data.ArivalDate %></td>
+                                    <td><%=data.ArivalTime %></td>
+                                    
+                                </tr>
+                                <%  i++; }) %>
+                                <% } else{ %>
+                                    <tr>
+                                        <td colspan="7">No Data Found</td>
+                                    </tr>
+                                <% } %>
+                                </tbody>
+                          </table>
+                        </div>
+                        
+
+                       
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>	
+        </div>
+    </nav>
+</body>
+</html>
