@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Arival Flight</title>
+    <title>Departure Flight</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -27,53 +27,55 @@
                     <li><a href="/Adminhome">Home</a></li>
                     <li><a href="/addArrivalFlight">Add Arival Flight</a></li>
                     <li ><a href="/addDepartureFlight">Add Departure Flight</a></li>
-                    <li class="active"><a href="/Arrival">Arival Flight</a></li>
-                    <li  ><a href="/Departure">Departure Flight</a></li>
+                    <li><a href="/Arrival">Arival Flight</a></li>
+                    <li class="active" ><a href="/Departure">Departure Flight</a></li>
                     <li ><a href="/addEmployee">Add Employee Details</a></li>
                     <li ><a href="/Employee">Employee Details</a></li>
+
                     
                 </ul>
                 
-                <div class="col-sm-8 col-sm-offset-2">
-                    <div class="panel-group">
-                          <div class="panel panel-default panel-transparent">
-                            <div class="panel-heading">
-                                <legend style="text-align: center;">Arival Flight Details</legend>
-                            </div>
-
-                            <div class="panel-body">
-                        <header>
-                            <h2>Arrival</h2>
-                            <hr>
-                        </header>
-
+            </nav>
+            <div class="col-sm-8 col-sm-offset-2">
+                <div class="panel-group">
+                      <div class="panel panel-default panel-transparent">
+                        <div class="panel-heading">
+                            <legend style="text-align: center;">Departure Flight Details</legend>
+                        </div>
 
                         <div class="panel-body">
-                            <table class="table table-hover" style="color: black; font-size: 20px">
-                                <thead>
-                                    <tr>
-                                        <th>No.</th>
-                                        <th>Flight Code</th>
-                                        <th>Airline Name</th>
-                                        <th>from</th>
-                                        <th>Arival Date</th>
-                                        <th>Arival Time</th>
-                                    
-                                    </tr>
-                                </thead>
-                                <tbody>
+                    <header>
+                        <h2>Departure</h2>
+                        <hr>
+                    </header>
+
+
+                    <div class="panel-body">
+                        <table class="table table-hover" style="color: black; font-size: 20px">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Flight Code</th>
+                                    <th>Airline Name</th>
+                                    <th>To</th>
+                                    <th>Departure Date</th>
+                                    <th>Departure Time</th>
+                                   
+                                </tr>
+                            </thead>
+                            <tbody>
                                 <%
-                                if(ArivalData.length!=0){
+                                if(DepartureData.length!=0){
                                 var i=1;
-                                ArivalData.forEach(function(data){
+                                DepartureData.forEach(function(data){
                                 %>
                                 <tr>
                                     <td><%=i; %></td>
                                     <td><%=data.FlightCode %></td>
                                     <td><%=data.Airline %></td>
-                                    <td><%=data.From %></td>
-                                    <td><%=data.ArivalDate %></td>
-                                    <td><%=data.ArivalTime %></td>
+                                    <td><%=data.Destination %></td>
+                                    <td><%=data.DepartureDate %></td>
+                                    <td><%=data.DepartureTime %></td>
                                     
                                 </tr>
                                 <%  i++; }) %>
@@ -83,19 +85,19 @@
                                     </tr>
                                 <% } %>
                                 </tbody>
-                          </table>
-                        </div>
-                        
+                            
+                      </table>
+                    </div>
+                    
 
-                       
-                                
-                            </div>
+                   
+                            
                         </div>
                     </div>
                 </div>
-                
-            </div>	
-        </div>
-    </nav>
+            </div>
+            
+        </div>	
+    </div>
 </body>
 </html>

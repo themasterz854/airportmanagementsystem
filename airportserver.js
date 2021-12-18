@@ -1,6 +1,7 @@
 // Requiring module
 var sql = require('mysql');
 var fs = require('fs');
+
 var https = require('https');
 var privateKey  = fs.readFileSync('./key.pem', 'utf8');
 var certificate = fs.readFileSync('./cert.pem', 'utf8');
@@ -11,6 +12,7 @@ const express = require('express');
 const exp = require('constants');
 const res = require('express/lib/response');
 const req = require('express/lib/request');
+const { DATETIME, DATE } = require('mysql/lib/protocol/constants/types');
 var adminlog = 0;
 // Creating express object
 const app = express();
@@ -19,20 +21,21 @@ var absolutepathofassets = __dirname + '/public';
 var name;
 var httpsServer = https.createServer(credentials, app);
 
-app.set('views', __dirname);
+app.set('views', __dirname + "\\AirportAssets\\html\\admin");
 app.set('view engine', 'ejs');
 
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static(absolutepathofassets));
-
+console.log(__dirname);
 //SQL 
 var sqlcondata = {
     host: "localhost",
     user: "root",
-    password: "Hellstar#92",
-    database: "airport"}
+    database: "airport",
+    multipleStatements: true
+    }
     var con = sql.createConnection(sqlcondata);
     con.connect(function(err){ if (err) throw err;
       console.log("Connected to database " + sqlcondata["database"] + "!");
@@ -44,13 +47,6 @@ var sqlcondata = {
 // Handling GET request
 
 
-app.get('/table1', function(req, res, next) {
-  var sql='SELECT * FROM customerdata';
-  con.query(sql, function (err, data, fields) {
-  if (err) throw err;
-  res.render('table1', { title: 'table', userData: data});
-});
-});
 app.get('/', (req, res) => {
     res.sendFile(absolutepathofhtml + "/index.html");
 });
@@ -116,7 +112,26 @@ app.get("/addArrivalFlight", (req,res) => {
         res.send("NOT ADMIN");
     }
 })
-
+app.post("/addArrivalFlight", (req,res) =>{
+  var FC,AN,AT,AD,From;
+  FC = req.body.FlightCode;
+  AN = req.body.Airline;
+  AT = req.body.ArrivalTime;
+  AD = req.body.ArrivalDate;
+  From = req.body.From;
+  AD.replace('T', ' ');
+  var values = [[FC,AN,From,null,AD+" " +AT,null,null,"Arrival","NONSTOP"]];
+  var sql = "insert into flight values ?";
+  con.query(sql,[values], function (err, result) {
+    if (err) 
+    {
+      
+      throw err;
+    }
+    console.log("values inserted");
+    res.redirect("/addArrivalFlight");
+  });
+})
 app.get("/addDepartureFlight", (req,res) => {
     if(adminlog === 1)
     {
@@ -127,14 +142,42 @@ app.get("/addDepartureFlight", (req,res) => {
         res.send("NOT ADMIN");
     }
 })
-
-app.get("/Arrival", (req,res) => {
-  
-        res.sendFile(absolutepathofhtml+"admin/Arrival.html");
+app.post("/addDepartureFlight", (req,res) =>{
+  var FC,AN,DT,DD,to,Duration;
+  FC = req.body.FlightCode;
+  AN = req.body.Airline;
+  DT = req.body.DepartureTime;
+  DD = req.body.DeparturelDate;
+  to = req.body.to;
+  Duration = req.body.Duration;
+  DD.replace('T', ' ');
+  var values = [[FC,AN,null,to,null,DD+" " +DT,Duration,"Departure","NONSTOP"]];
+  var sql = "insert into flight values ?";
+  con.query(sql,[values], function (err, result) {
+    if (err) 
+    {
+      
+      throw err;
+    }
+    console.log("values inserted");
+    res.redirect("/addDepartureFlight");
+  });
 })
+
+
+app.get('/Arrival', (req, res, next) => {
+  var sql = "SELECT FlightCode,Airline,Source,DATE_FORMAT(Arrival,'%d %m %y') as ArrivalDate,TIME_FORMAT(Arrival,'%h:%i %p') as ArrivalTime from FLIGHT where Status='Arrival'";
+  con.query(sql, function(err, data, fields) {
+  if (err) throw err;
+  res.render('Arrival', { title: 'Arrival', ArrivalData: data});
+  });
+});
 app.get("/Departure", (req,res) => {
-    
-        res.sendFile(absolutepathofhtml+"admin/Departure.html");
+  var sql = "SELECT FlightCode,Airline,Destination,DATE_FORMAT(Departure,'%d %m %y') as DepartureDate,TIME_FORMAT(Departure,'%h:%i %p') as DepartureTime from FLIGHT where Status='Departure'";
+  con.query(sql, function(err, data, fields) {
+  if (err) throw err;
+  res.render('Departure', { title: 'Departure', DepartureData: data});
+  });
 })
 app.get("/addEmployee", (req,res) => {
     if(adminlog === 1)
