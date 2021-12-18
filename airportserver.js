@@ -31,9 +31,10 @@ app.use(express.static(absolutepathofassets));
 console.log(__dirname);
 //SQL 
 var sqlcondata = {
-    host: "localhost",
-    user: "root",
-    database: "airport",
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_DATABASE,
     multipleStatements: true
     }
     var con = sql.createConnection(sqlcondata);
