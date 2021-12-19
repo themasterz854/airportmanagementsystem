@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+		<title>Seat Check Availability</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script src="myjs.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+				<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Poppins">
+
+		<link rel="stylesheet" href="mycss.css">
+	</head>
+	<style type="text/css">
+				label{
+			color: rgb(0, 0, 0);
+		}
+	</style>
+<body style="background-image: url(/254361.jpg); background-size: auto;">
+    
+    <nav class="navbar navbar-inverse" style="border-radius:0px !important; margin:0;border: 0">
+        <div class="container-fluid">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>                       
+              </button>
+              <a class="navbar-brand" href="homeUser.html">Airline-X</a>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+              <ul class="nav navbar-nav">
+								<li ><a href="homeUser.html">Home</a></li>
+								<li ><a href="booking.html">Booking</a></li>
+								<li><a href="userflight.html">User Flight</a></li>
+								<li class="active"><a href="checkSeatAvailability.html">Seat Availability Check</a></li>
+								<!-- <li><a href="ticketHistory.html">Ticket History</a></li> -->
+							</ul>
+							<ul class="nav navbar-nav navbar-right">
+								<li><a href="../index.html"><span class="glyphicon glyphicon-log-in"></span> Logout</a></a></li>
+							</ul>
+                <!-- <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></a></li>
+                </ul> -->
+                
+                <!-- <form class="navbar-form navbar-right">
+                  <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search">
+                    <div class="input-group-btn">
+                      <button class="btn btn-default" type="submit">
+                        <i class="glyphicon glyphicon-search"></i>
+                      </button>
+                    </div>
+                  </div>
+                </form> -->
+            </div>	
+        </div>
+    </nav>
+
+
+    
+    <div class="background-wrapper" >
+				
+      <!--header-->
+
+      <div class="container-fluid">
+        <header>
+          <h2 style="color: rgb(155, 94, 94);">Seat Availability Check</h2>
+          <hr>
+        </header>
+
+
+        <!--panel-->
+        <div class="col-sm-10 col-sm-offset-1">
+            <div class="panel-group">
+                  <div class="panel panel-default panel-transparent">
+                    <div class="panel-heading">
+                        <legend style="text-align: center;">Flight Details</legend>
+                    </div>
+
+                    <div class="panel-body">
+                <!-- <header>
+                    <h2>Departure Flight Details</h2>
+                    <hr>
+                </header> -->
+
+
+                <div class="panel-body" style="width: auto;">
+                    <table class="table table-hover" style="color: black; font-size: 20px">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Flight Code</th>
+                                <th>Airline Name</th>
+                                <th>To</th>
+                                <th>Departure Date</th>
+                                <th>Departure Time</th>
+                                <th>Available Seats</th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <%
+                            if(DepartureData.length!=0){
+                            var i=1;
+                            DepartureData.forEach(function(data){
+                            %>
+                            <tr>
+                                <td><%=i; %></td>
+                                <td><%=data.FlightCode %></td>
+                                <td><%=data.Airline %></td>
+                                <td><%=data.To %></td>
+                                <td><%=data.DepatureDate %></td>
+                                <td><%=data.DepatureTime %></td>
+                                <td><%=data.seatAvaible ></td>
+                                
+                            </tr>
+                            <%  i++; }) %>
+                            <% } else{ %>
+                                <tr>
+                                    <td colspan="7">No Data Found</td>
+                                </tr>
+                            <% } %>
+                            </tbody>
+                        
+                  </table>
+                </div>
+                
+
+               
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

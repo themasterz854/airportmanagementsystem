@@ -1,7 +1,7 @@
 // Requiring module
 var sql = require('mysql');
 var fs = require('fs');
-
+var mongo = require('mongodb');
 var https = require('https');
 var privateKey  = fs.readFileSync('./key.pem', 'utf8');
 var certificate = fs.readFileSync('./cert.pem', 'utf8');
@@ -13,6 +13,7 @@ const exp = require('constants');
 const res = require('express/lib/response');
 const req = require('express/lib/request');
 const { DATETIME, DATE } = require('mysql/lib/protocol/constants/types');
+const { randomInt } = require('crypto');
 var adminlog = 0;
 // Creating express object
 const app = express();
@@ -21,7 +22,7 @@ var absolutepathofassets = __dirname + '/public';
 var name;
 var httpsServer = https.createServer(credentials, app);
 
-app.set('views', __dirname + "\\AirportAssets\\html\\admin");
+app.set('views', __dirname + "\\AirportAssets\\views");
 app.set('view engine', 'ejs');
 
 
@@ -45,9 +46,24 @@ var sqlcondata = {
       console.debug(string);
       next();
     });
+
+//MongoDB
+
+var MongoClient = mongo.MongoClient;
+var url = "mongodb://127.0.0.1:27017";
+MongoClient.connect(url, function(err, db) {
+  if (err) throw err;
+  console.log("Database connected mongodb!");
+  var dbo = db.db("airport");
+  dbo.collection("Employee").find({}).toArray(function(err, result) {
+    if (err) throw err;
+    console.log(result);
+    db.close();
+  });
+});
+
 // Handling GET request
-
-
+app.get("/Employee")
 app.get('/', (req, res) => {
     res.sendFile(absolutepathofhtml + "/index.html");
 });
@@ -86,7 +102,7 @@ app.get('/json',(req,res) => {
   jsonobj["message"] = jsonobj["message"].toUpperCase();
 }
   res.json(jsonobj);
-})
+});
 
 app.get("/:word/echo", (req, res) => {
   const word = req.params.word;
@@ -101,7 +117,7 @@ app.get("/Adminhome", (req,res) => {
     {
         res.redirect("/");
     }
-})
+});
 
 app.get("/addArrivalFlight", (req,res) => {
     if(adminlog === 1)
@@ -112,7 +128,7 @@ app.get("/addArrivalFlight", (req,res) => {
     {
         res.send("NOT ADMIN");
     }
-})
+});
 app.post("/addArrivalFlight", (req,res) =>{
   var FC,AN,AT,AD,From;
   FC = req.body.FlightCode;
@@ -132,7 +148,7 @@ app.post("/addArrivalFlight", (req,res) =>{
     console.log("values inserted");
     res.redirect("/addArrivalFlight");
   });
-})
+});
 app.get("/addDepartureFlight", (req,res) => {
     if(adminlog === 1)
     {
@@ -142,7 +158,7 @@ app.get("/addDepartureFlight", (req,res) => {
     {
         res.send("NOT ADMIN");
     }
-})
+});
 app.post("/addDepartureFlight", (req,res) =>{
   var FC,AN,DT,DD,to,Duration;
   FC = req.body.FlightCode;
@@ -163,7 +179,7 @@ app.post("/addDepartureFlight", (req,res) =>{
     console.log("values inserted");
     res.redirect("/addDepartureFlight");
   });
-})
+});
 
 
 app.get('/Arrival', (req, res, next) => {
@@ -179,7 +195,7 @@ app.get("/Departure", (req,res) => {
   if (err) throw err;
   res.render('Departure', { title: 'Departure', DepartureData: data});
   });
-})
+});
 app.get("/addEmployee", (req,res) => {
     if(adminlog === 1)
     {
@@ -189,7 +205,7 @@ app.get("/addEmployee", (req,res) => {
     {
         res.send("NOT ADMIN");
     }
-})
+});
 app.get("/Employee", (req,res) => {
     if(adminlog === 1)
     {
@@ -199,15 +215,94 @@ app.get("/Employee", (req,res) => {
     {
         res.send("NOT ADMIN");
     }
-})
+});
 
-//adminlogin
+app.get("/homeUser", (req,res) => {
+  res.sendFile(absolutepathofhtml+"passenger/homeUser.html");
+})
+app.get("/booking", (req,res) => {
+ res.sendFile(absolutepathofhtml+"/passenger/booking.html");
+});
+
+app.post("/booking", (req,res) => {
+  var PID,FC,Class,TN,Source,Destination,DOBooking,DOT,DOC,SeatNo,TOT;
+  console.log(req.body);
+  PID = req.body.PID;
+  FC = req.body.FlightCode;
+  Class = req.body.class;
+  var date = new Date();
+  var day = ("0" + date.getDate()).slice(-2);
+  var month = ("0" + (date.getMonth() + 1)).slice(-2);
+  var year = date.getFullYear(); 
+  DOBooking = year + "-" + month + "-" + day;
+  DOT = req.body.DDate;
+  DOT = DOT.replace('T',' ');
+  TOT = req.body.Dtime;
+  SeatNo = req.body.SeatNo;
+ 
+  TN = randomInt(1,9999);
+  sql = 'insert into ticket (PID,Ticket_Number,Date_of_booking,Date_of_travel,Date_of_cancellation,SeatNo,Class) values ?';
+  values = [[PID,TN,DOBooking,DOT,null,SeatNo,Class]];
+
+  con.query(sql,[values], function (err, result) {
+    if (err) 
+    {
+      throw err;
+    }
+ 
+    });
+    var sql = `SELECT Source,Destination from flight where FlightCode="${FC}" AND DATE(Departure)="${DOT}" AND TIME(Departure)="${TOT}"`; 
+
+    con.query(sql, function (err, result) {
+      if (err) 
+      {
+        
+        throw err;
+      }
+      Source = result[0].Source;
+      Destination=result[0].Destination;
+      con.query(`update ticket set Source="${Source}",Destination="${Destination}" where PID=${PID}`, function (err, result) {
+        if (err) 
+        {
+          
+          throw err;
+        }
+       
+        }); 
+        con.query(`insert into carries values(${PID}, "${FlightCode}")`, function (err, result) {
+          if (err) 
+          {
+            
+            throw err;
+          }
+         
+          }); 
+      });  
+      console.log("ticket values inserted");
+   res.redirect(`/booking?PID=${PID}`);
+
+});
+
+app.get("/ticketDetails", (req,res) => {
+  var sql = `select Ticket_Number,Source,Destination,Class,SeatNo,DATE_FORMAT(Date_of_booking,"%d %m %y") as DOBOOK,DATE_FORMAT(Date_of_travel,"%d %m %y") as DOT,(select Flightcode from carries where pid=${req.query.PID}) as FC,(select TIME_FORMAT(Departure,"%r") from flight where flightcode=(select flightcode from carries where PID=${req.query.PID})) as DepartureTime from ticket where PID=${req.query.PID}`;
+  con.query(sql, function (err, data) {
+    if (err) 
+    {
+      
+      throw err;
+    }
+    res.render("ticketDetails", {title:"Ticket", TicketData:data});
+    }); 
+  
+  
+});
+//login
  app.post('/', (req,res) => {
   var UserID,PASS;
   UserID = req.body.userid;
   PASS = req.body.pass;
  
-    var sql = `SELECT UserID,Pass FROM LOGINDATA WHERE UserID= "${UserID}" AND Pass="${PASS}"`;
+    var sql = `SELECT UserID,Pass,Type FROM LOGINDATA WHERE UserID= "${UserID}" AND Pass="${PASS}"`;
     console.log(sql);
     con.query(sql, function (err, result,fields) {
       if (err) 
@@ -217,10 +312,14 @@ app.get("/Employee", (req,res) => {
       { 
         res.send("wrong username or password");
       }
-      else
+      else if(result[0].Type === "admin")
       { 
           adminlog =1;
         res.redirect("/Adminhome");
+      }
+      else
+      {
+        res.redirect("/homeUser");
       }
         
     
