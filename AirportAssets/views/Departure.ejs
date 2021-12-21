@@ -7,11 +7,10 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-		<script src="myjs.js"></script>
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-				<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Poppins">
+				<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Poppins">
 
-		<link rel="stylesheet" href="mycss.css">
+		<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <nav class="navbar navbar-inverse" style="border-radius:0px !important; margin:0;border: 0">
@@ -24,18 +23,26 @@
             </div>
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav">
-                    <li><a href="/Adminhome">Home</a></li>
-                    <li><a href="/addArrivalFlight">Add Arival Flight</a></li>
-                    <li ><a href="/addDepartureFlight">Add Departure Flight</a></li>
-                    <li><a href="/Arrival">Arival Flight</a></li>
-                    <li class="active" ><a href="/Departure">Departure Flight</a></li>
-                    <li ><a href="/addEmployee">Add Employee Details</a></li>
-                    <li ><a href="/Employee">Employee Details</a></li>
-
-                    
+                    <% if (DepartureData.isadmin === "yes") {%>
+                        <li><a href="/Adminhome">Home</a></li>
+                        <li><a href="/addArrivalFlight">Add Arival Flight</a></li>
+                        <li ><a href="/addDepartureFlight">Add Departure Flight</a></li>
+                        <li><a href="/Arrival">Arival Flight</a></li>
+                        <li class="active" ><a href="/Departure">Departure Flight</a></li>
+                        <li><a href="/addEmployee">Add Employee Details</a></li>
+                        <li><a href="/Employee">Employee Details</a></li>
+                    <%} else{ %>
+                        <li><a href="/homeUser">Home</a></li>
+						<li><a href="/booking">Booking</a></li>
+                        <li><a href="/ticketDetails">Ticket Details</a></li>
+                        <li><a href="/addpassengerdetails">Add passenger details</a></li>
+                        <li><a href="/passengerdetails">Passenger details</a></li>
+                        <li><a href="/Arrival">Arrivals</a></li>
+                        <li class="active"><a href="/Departure">Departures</a></li>
+                        <% } %>
                 </ul>
-                
-            </nav>
+                </div>
+            
             <div class="col-sm-8 col-sm-offset-2">
                 <div class="panel-group">
                       <div class="panel panel-default panel-transparent">
@@ -99,5 +106,13 @@
             
         </div>	
     </div>
+</nav>
+<% if (DepartureData.isadmin === "yes") { %>
+    <div class="form-box">
+    <form  action="/deletedeparture" class="input-group"  method="post" >
+        <input type="text" class="input-field" name="FC" placeholder="Ente the FC to remove" required>
+        <button type="submit" >Enter the FC to remove</button></form>
+    </div>
+  <% } %>
 </body>
 </html>

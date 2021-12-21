@@ -67,6 +67,11 @@
                             <legend style="text-align: center;">Ticket Details</legend>
                         </div>
                         <div class="panel-body">
+                            <div class="form-box">
+                                <form  class="input-group"  method="post" >
+                                    <input type="text" class="input-field" name="PIDT" placeholder="Ente your PID" required>
+                                    <button type="submit">Enter your PID</button></form>
+                                </div>
                             <table class="table table-hover" style="color: black; font-size: 20px">
                                 <thead>
                                     <tr>
@@ -84,31 +89,16 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <%
-                                    if(TicketData.length!=0){
-                                    var i=1;
-                                    TicketData.forEach(function(data){
-                                    %>
+                                   
                                     <tr>
-                                        <td><%=i; %></td>
-                                        <td><%=data.FC %></td>
-                                        <td><%=data.Ticket_Number %></td>
-                                        <td><%=data.Source %></td>
-                                        <td><%=data.Destination %></td>
-                                        <td><%=data.DOBOOK %></td>
-                                        <td><%=data.DOT %></td>
-                                        <td><%=data.DepartureTime %></td>
-                                        <td><%=data.Date_of_Cancellation %></td>
-                                        <td><%=data.Class %></td>
-                                        <td><%=data.SeatNo %></td>
+                                       
                                         
                                     </tr>
-                                    <%  i++; }) %>
-                                    <% } else{ %>
+                                  
                                         <tr>
                                             <td colspan="7">No Data Found</td>
                                         </tr>
-                                    <% } %>
+                                  
                                     </tbody>
                             </table>
                         </div>
@@ -125,7 +115,7 @@
             padding: 5px;
             overflow: hidden ;">
             <form action="/deleteticket" class="input-group"  method="post" >
-                <input type="number" class="input-field" name="TN" placeholder="Ente the Ticket Number to remove" required>
+                <input type="text" class="input-field" name="TN" placeholder="Ente the Ticket Number to remove" required>
                 <button type="submit" >Enter the Ticket Number to remove</button></form>
             </div>
     

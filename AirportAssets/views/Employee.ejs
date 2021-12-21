@@ -63,14 +63,16 @@
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th>SSN</th>
                                 <th>First Name</th>
+                                <th>Mname</th>
                                 <th>Last Name</th>
-                                <th>DOB</th>
                                 <th>Age</th>
                                 <th>Gender</th>
-                                <th>SSN</th>
                                 <th>Phone No.</th>
                                 <th>Job type</th>
+                                <th>Address</th>
+                                <th>Salary</th>
                                 <th>Edit/Delete</th>
                             </tr>
                         </thead>
@@ -82,16 +84,17 @@
                             %>
                             <tr>
                                 <td><%=i; %></td>
-                                <td><%=data.FirstName %></td>
-                                <td><%=data.LastName %></td>
-                                <td><%=data.DOB %></td>
+                                <td><%=data.SSN %></td>
+                                <td><%=data.Fname %></td>
+                                <td><%=data.Mname %></td>
+                                <td><%=data.Lname %></td>
                                 <td><%=data.Age %></td>
-                                <td><%=data.Gender %></td>
-                                <td><%=data.ESSN %></td>
-                                <td><%=data.PhoneNo %></td>
+                                <td><%=data.Sex %></td>
+                                <td><%=data.Phone %></td>
                                 <td><%=data.JobType %></td>
-                                <td><a href="/users/edit/<%=data.id%>">Edit</a></td>
-                                <td><a href="/users/delete/<%=data.id%>">Delete</a></td>
+                                <td><%=data.Address %></td>
+                                <td><%=data.Salary %></td>
+                                <td><a href="/deleteemployee?SSND=<%=data.SSN %>">Delete</a></td>
                             </tr>
                             <%  i++; }) %>
                             <% } else{ %>

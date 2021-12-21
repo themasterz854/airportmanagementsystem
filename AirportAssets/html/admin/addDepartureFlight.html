@@ -7,11 +7,10 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-		<script src="myjs.js"></script>
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-				<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Poppins">
+				<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Poppins">
 
-		<link rel="stylesheet" href="mycss.css">
+
 </head>
 <body>
     <nav class="navbar navbar-inverse" style="border-radius:0px !important; margin:0;border: 0">
@@ -47,16 +46,16 @@
                             <hr>
                         </header>
                         
-                        <form class="form-inline">
+                        <form class="form-inline" method="post">
                                     <div>
                                         <div class="input-group">
                                             <label >Flight Code</label>
-                                            <input name="FlightCode" type="number" class="form-control trans-input-area" min="0" placeholder="" required>
+                                            <input name="FlightCode" type="text" class="form-control trans-input-area" min="0" placeholder="" required>
                                         </div>
             
                                         <div class="input-group">
                                             <label >Airline Name</label>
-                                            <input name="ArilineName" type="text" class="form-control trans-input-area" placeholder="" required>
+                                            <input name="Airline" type="text" class="form-control trans-input-area" placeholder="" required>
                                         </div>
                                         
                                     </div>
@@ -70,7 +69,7 @@
                                         </div>
                                         <div class="input-group">
                                             <label >Departure Date</label>
-                                            <input name="DepatureData" type="date" class="form-control trans-input-area" placeholder="First name" required>
+                                            <input name="DepartureDate" type="date" class="form-control trans-input-area" placeholder="First name" required>
                                         </div>
 
 
@@ -79,7 +78,7 @@
                                     <div>
                                         <div class="input-group">
                                             <label>to</label>
-                                            <input name="" type="text" class="form-control trans-input-area" placeholder="" required>
+                                            <input name="to" type="text" class="form-control trans-input-area" placeholder="" required>
                                 
                                         </div>
                                         <div class="input-group">
@@ -92,16 +91,10 @@
                                     </div>
                                     
                                     <br>
-                                  
-                                    
-
-                                </form>
-                        
-                                <form class="form-inline">
                                     <br>
             
                                 <div class="input-group-btn">
-                                <button name="button" class="btn btn-primary trans-input-area" href="/addDepartureFlight" style="width: 40%; float: left;"><a href="#" style="color: white">submit</a></button>
+                                <button name="button" class="btn btn-primary trans-input-area" style="width: 40%; float: left;">submit</button>
                                
                                 </div>
 

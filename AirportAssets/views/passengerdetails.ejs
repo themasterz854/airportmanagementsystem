@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <title>Passenger details</title>
@@ -14,7 +13,7 @@
 		<liknk rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
+	
     <nav class="navbar navbar-inverse" style="border-radius:0px !important; margin:0;border: 0">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -25,13 +24,11 @@
             </div>
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav">
-                    <li><a href="/homeUser">Home</a></li>
+					<li><a href="/homeUser">Home</a></li>
                     <li><a href="/booking">Booking</a></li>
                     <li><a href="/ticketDetails">Ticket Details</a></li>
                     <li><a href="/addpassengerdetails">Add passenger details</a></li>
                     <li class = "active"><a href="/passengerdetails">Passenger details</a></li>
-                    <li><a href="/Arrival">Arrivals</a></li>
-					<li><a href="/Departure">Departures</a></li>
                     
                 </ul>
                 
@@ -46,14 +43,56 @@
                         <header>
                             <h2>Passenger details</h2>
                             <hr>
-
                         </header>
 
-                        <form class="input-group" method="post">
-                            <input type="text" class="input-field" name="formpid" placeholder="Enter your PID" required>
-                            <button type="submit" class="submit-btn">Get details</button></form>
 
-                       
+                        <div class="panel-body">
+							<form class="input-group" method="post">
+								<input type="text" class="input-field" name="formpid" placeholder="Enter your PID" required>
+								<button type="submit" class="submit-btn">Get details</button></form>
+                            <table class="table table-hover" style="color: black; font-size: 20px">
+                                <thead>
+                                    <tr>
+                                        <th>PID</th>
+                                        <th>PassportNo</th>
+                                        <th>Fname</th>
+                                        <th>Middle name</th>
+                                        <th>Lname</th>
+                                        <th>Address</th>
+										<th>Phone</th>
+										<th>Sex</th>
+										<th>Age</th>
+                                    
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <%
+                                if(PassengerData.length!=0){
+                                var i=1;
+                                PassengerData.forEach(function(data){
+                                %>
+                                <tr>
+                                    <td><%=data.PID %></td>
+                                    <td><%=data.passportno %></td>
+                                    <td><%=data.Fname %></td>
+                                    <td><%=data.M %></td>
+                                    <td><%=data.Lname %></td>
+									<td><%=data.Address %></td>
+									<td><%=data.Phone %></td>
+									<td><%=data.Sex %></td>
+									<td><%=data.Age %></td>
+                                    
+                                </tr>
+                                <%  i++; }) %>
+                                <% } else{ %>
+                                    <tr>
+                                        <td colspan="7">No Data Found</td>
+                                    </tr>
+                                <% } %>
+                                </tbody>
+                          </table>
+                        </div>
+                        
 
                        
                                 

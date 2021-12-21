@@ -1,0 +1,160 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>Booking</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script src="myjs.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+				<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Poppins">
+
+		<link rel="stylesheet" href="mycss.css">
+	</head>
+	<style type="text/css">
+		label{
+			color: rgb(0, 0, 0);
+		}
+	
+	
+	</style>
+	<body>
+				<nav class="navbar navbar-inverse" style="border-radius:0px !important; margin:0;border: 0">
+					<div class="container-fluid">
+						<div class="navbar-header">
+						  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+							<span class="icon-bar"></span>                       
+						  </button>
+						  <a class="navbar-brand" href="/homeUser">Airline-X</a>
+						</div>
+						<div class="collapse navbar-collapse" id="myNavbar">
+							<ul class="nav navbar-nav">
+								<li><a href="/homeUser">Home</a></li>
+								<li><a href="/booking">Booking</a></li>
+								<li><a href="/ticketDetails">Ticket Details</a></li>
+								<li class="active"><a href="/addpassengerdetails">Add passenger details</a></li>
+								<li><a href="/passengerdetails">Passenger details</a></li>
+								<li><a href="/Arrival">Arrivals</a></li>
+								<li><a href="/Departure">Departures</a></li>
+								<li><a href="/getpid">Get ur pid</a></li>
+
+							</ul>
+							<ul class="nav navbar-nav navbar-right">
+								<li><a href="../index.html"><span class="glyphicon glyphicon-log-in"></span> Logout</a></a></li>
+							</ul>
+							
+						
+						</div>	
+					</div>
+				</nav>
+				
+				
+
+				<div class="background-wrapper" style="background-image: url(/254361.jpg);">
+				
+				<!--header-->
+
+				<div class="container-fluid">
+					<header>
+						<h2></h2>
+						
+					</header>
+
+
+					<!--panel-->
+					<div class="col-sm-8 col-sm-offset-2">
+						<div class="panel-group">
+						  	<div class="panel panel-default panel-transparent">
+						    	<div class="panel-heading">
+						    		<legend style="text-align: center;">Passengers Information</legend>
+						    	</div>
+
+						    	<div class="panel-body">
+						    		<header>
+						    	<h2>Passenger Details:</h2>
+						    	<hr>
+						    </header>
+						    		
+									<form class="form-inline" method="post">
+										<br>
+										<div>
+											<div class="input-group">
+												<label>First name</label>
+												<input type="text" class="form-control trans-input-area" name="Fname" placeholder="First name" required>
+											</div>
+											<div class="input-group">
+												<label>Middle name</label>
+												<input type="text" class="form-control trans-input-area" name="Mname" placeholder="First name" required>
+											</div>
+											<div class="input-group">
+												<label>Last name</label>
+												<input type="text" class="form-control trans-input-area" name="Lname" placeholder="Last name" required>
+											</div>
+										</div>
+										
+										<br>
+										<div>
+											<div class="input-group">
+												<label >Age</label>
+												<input type="number" class="form-control trans-input-area" min="0" name="Age" placeholder="" required>
+											</div>
+											<div class="input-group">
+												<label >Gender</label>
+												<select name="Gender" class="form-control trans-input-area">
+													<option >Male</option>
+													<option>Female</option>
+													<!-- <option>Business</option> -->	
+													</select>
+											</div>
+										</div>
+										<br>
+										<div>
+											<div class="input-group">
+												<label>Phone Number</label>
+												<input type="number" placeholder="1234567890" name="PhoneNo" class="form-control trans-input-area" required>
+												
+											</div>
+											<div class="input-group">
+												<label>Passport Number</label>
+												<input type="number" placeholder="1234567890" name="PassportNo" class="form-control trans-input-area" required>
+												
+											</div>
+											
+										</div>
+										<br>
+										
+								
+										<div class="input-group">
+											<label><Address>Address</Address></label>
+											<input type="text" name = "Address" placeholder="" class="form-control trans-input-area" required>
+										</div>
+										<hr>
+										
+
+									
+							
+				
+										<br>
+				
+									<div class="input-group-btn">
+									<button class="btn btn-primary trans-input-area" style="width: 40%; float: left;"><a href="booking.html" style="color: white">back</a></button>
+									<button class="btn btn-primary trans-input-area" type="submit" style="width: 40%; float:right;"><p style="color:white">Continue</p></button>
+									</div>
+								</form>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+		 
+
+	</body>
+</html>
+
+
