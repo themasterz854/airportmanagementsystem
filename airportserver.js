@@ -10,7 +10,6 @@ dotenv.config();
 var credentials = {key: privateKey, cert: certificate};
 const express = require('express');
 
-const { randomInt } = require('crypto');
 var adminlog = 0;
 // Creating express object
 const app = express();
@@ -58,6 +57,19 @@ MongoClient.connect(url, function(err, db) {
 });
 
 // Handling GET request
+app.get("/AddEmployee", (req,res) => {
+
+  if(adminlog === 1)
+  {
+    var FN,M,LN,Age,Gender,SSN,PhoneNo,JobType,Address,
+MongoClient.connect(url, function(err, db) {
+  if (err) throw err;
+  console.log("Database connected mongodb!");
+  var dbo = db.db("airport");
+  dbo.collection("Employee").insertOne()
+});
+}
+});
 app.get("/Employee", (req,res) => {
   if(adminlog === 1)
   {
@@ -100,6 +112,9 @@ MongoClient.connect(url, function(err, db) {
 }
 res.redirect("/Employee");
 });
+
+
+
 app.get(
   "/now",
   (req, res, next) => {
@@ -125,16 +140,6 @@ app.get("/now2", middleware2, (req, res) => {
 });
 
 
-
-app.get('/json',(req,res) => {
-  name = req.query.firstname;
-  jsonobj["message"] = "Hello" + name;
-  if(process.env.MESSAGE_STYLE === "uppercase")
-{
-  jsonobj["message"] = jsonobj["message"].toUpperCase();
-}
-  res.json(jsonobj);
-});
 
 app.get("/:word/echo", (req, res) => {
   const word = req.params.word;
