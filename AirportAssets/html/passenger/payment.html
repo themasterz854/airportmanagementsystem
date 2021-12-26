@@ -63,7 +63,7 @@
                 
                 <div class="container-fluid">
                     <header>
-                        <h2>Payement</h2>
+                        <h2>Payment</h2>
                         <hr>
                     </header>
                     <div class="col-sm-6 col-sm-offset-3">
@@ -73,7 +73,7 @@
                                     <legend style="text-align: center;">Payment Information</legend>
                                 </div>
                                 <div class="panel-body">
-                                    <form class="form-horizontal"  style="padding: 0 5rem 0 5rem; width: 100%">
+                                    <form class="form-horizontal"  style="padding: 0 5rem 0 5rem; width: 100%" action = "/payment">
                                            
                                             <div class="form-group">
                                                 <label >Card Number</label>
@@ -81,8 +81,8 @@
                                             </div>
                                             <div class="form-group">
                                                 <div style="float: left; width: 46%">
-                                                <label >Expiray</label>
-                                                <input type="month" class="form-control trans-input-area" placeholder="month/year" name="Expiray" id="" required>
+                                                <label >Expiry</label>
+                                                <input type="month" class="form-control trans-input-area" placeholder="month/year" name="Expiry" id="" required>
                                             </div>
                                             <div style="float: right; width: 46%">
                                                 <label >CVC</label>
@@ -90,7 +90,7 @@
                                             </div>
                                             </div>
                                             <br>
-                                            <button class="btn btn-primary trans-input-area" href="payement.html" type="submit" style="width: 40%; float:right;" ><a href="ticketDeatils.html" style="color: white">Click To Pay</a></button>
+                                            <button class="btn btn-primary trans-input-area" type="submit" style="width: 40%; float:right;" ><a href="/ticketDetails" style="color: white">Click To Pay</a></button>
                                         </form>
                                         <br>
                                     </div>

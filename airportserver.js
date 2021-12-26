@@ -5,6 +5,7 @@ var mongo = require('mongodb');
 var https = require('https');
 var privateKey  = fs.readFileSync('./key.pem', 'utf8');
 var certificate = fs.readFileSync('./cert.pem', 'utf8');
+const { body, validationResult } = require('express-validator');
 const dotenv = require('dotenv');
 dotenv.config();
 var credentials = {key: privateKey, cert: certificate};
@@ -57,18 +58,45 @@ MongoClient.connect(url, function(err, db) {
 });
 
 // Handling GET request
-app.get("/AddEmployee", (req,res) => {
+app.get("/addEmployee", (req,res) => {
 
+  res.sendFile(absolutepathofhtml+"/admin/addEmployee.html");
+
+});
+app.post("/addEmployee",  body('PhoneNo').isLength(10),body('Age').isFloat({min:0 , max:100}),(req,res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });}
   if(adminlog === 1)
-  {
-    var FN,M,LN,Age,Gender,SSN,PhoneNo,JobType,Address,
+  { 
+    var FN,M,LN,Age1,Sex1,ESSN,PhoneNo,Jobtype,Addr;
+
+    FN = req.body.FirstName;
+    M = req.body.MiddleName;
+    LN = req.body.LastName;
+    Age1 = parseInt(req.body.Age);
+    Sex1 = req.body.Gender;
+    ESSN = parseInt(req.body.ESSN);
+    PhoneNo =req.body.PhoneNo;
+
+    Jobtype = req.body.JobType;
+    Addr = req.body.EAddress;
+   
+    
+    var edata = {SSN: ESSN, Fname: FN , Mname :M, Lname: LN,Age: Age1, Sex: Sex1, Phone:PhoneNo,JobType: Jobtype,Address: Addr};
 MongoClient.connect(url, function(err, db) {
   if (err) throw err;
   console.log("Database connected mongodb!");
   var dbo = db.db("airport");
-  dbo.collection("Employee").insertOne()
+  dbo.collection("Employee").insertOne(edata,function(err){
+    if(err)
+    throw err;
+    console.log("employee inserted");
+    res.redirect("/addEmployee"); 
+  });
+  
 });
-}
+  } 
 });
 app.get("/Employee", (req,res) => {
   if(adminlog === 1)
@@ -166,7 +194,10 @@ app.get("/addArrivalFlight", (req,res) => {
         res.send("NOT ADMIN");
     }
 });
-app.post("/addArrivalFlight", (req,res) =>{
+app.post("/addArrivalFlight", body('ArrivalDate').isAfter(new Date().toString()),(req,res) =>{
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });}
   var FC,AN,AT,AD,From;
   FC = req.body.FlightCode;
   AN = req.body.Airline;
@@ -209,7 +240,10 @@ app.get("/addDepartureFlight", (req,res) => {
         res.send("NOT ADMIN");
     }
 });
-app.post("/addDepartureFlight", (req,res) =>{
+app.post("/addDepartureFlight", body('DepartureDate').isAfter(new Date().toString()),(req,res) =>{
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });}
   var FC,AN,DT,DD,to,Duration;
   FC = req.body.FlightCode;
   AN = req.body.Airline;
@@ -316,7 +350,10 @@ function executequeryt(sql,PID,TN,FC,DOBooking,DOT,SeatNo,Class,TOT)
           }); 
       });  
 }
-app.post("/booking", (req,res) => {
+app.post("/booking", body('SeatNo').isFloat({min: 1 , max: 450}),(req,res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });}
   var PID,FC,Class,TN,Source,Destination,DOBooking,DOT,DOC,SeatNo,TOT;
   console.log(req.body);
   PID = req.body.PID;
@@ -363,7 +400,14 @@ app.post("/booking", (req,res) => {
    res.redirect("/homeUser");
 
 });
+app.get("/payment",(req,res) => {
 
+  res.sendFile(absolutepathofhtml+"/passenger/payment.html");
+
+});
+
+app.post("/payment",body("CardNumber").isCreditCard(), (req,res) => {
+});
 app.get("/ticketDetails", (req,res) => {
 res.sendFile(absolutepathofhtml+"/passenger/ticketDetails.html");
 
@@ -443,7 +487,10 @@ function executequery(sql,pid,Fname,Mname,Lname,Age,Sex,Phone,Passport,Address){
     console.log("values inserted");
 });
 }
-app.post("/addpassengerdetails",(req,res)=> {
+app.post("/addpassengerdetails",body('PhoneNo').isLength(10),body('Age').isNumeric({min:0, max:100}),(req,res)=> {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });}
  var sql;
   var Fname,Mname,Lname,Age,Sex,Phone,Passport,Address;
   Fname = req.body.Fname;
@@ -490,13 +537,25 @@ app.get("/getpid", (req,res) =>{
 res.send(`your pid is ${pid} , Please note it down, it will only appear this once`);  
 });
 //login
- app.post('/', (req,res) => {
-  var UserID,PASS;
+
+ app.post('/',(req,res) => {
+   if(req.body.formName === "register")
+   {
+    body('email').isEmail();
+   }
+   body('userid').isAlphanumeric();
+   body('pass').isStrongPassword();
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });}
+  
+  var UserID,PASS,sql;
   UserID = req.body.userid;
   PASS = req.body.pass;
- 
-    var sql = `SELECT UserID,Pass,Type FROM LOGINDATA WHERE UserID= "${UserID}" AND Pass="${PASS}"`;
-    con.query(sql, function (err, result,fields) {
+  console.log(UserID, PASS, req.body.formName);
+  if(req.body.formName === "login"){ 
+    sql = `SELECT UserID,Pass,Type FROM LOGINDATA WHERE UserID="${UserID}" AND Pass=(select sha2("${PASS}",512))`;
+    con.query(sql,function (err, result,fields) {
       if (err) 
       { 
       }
@@ -513,13 +572,21 @@ res.send(`your pid is ${pid} , Please note it down, it will only appear this onc
       {
         res.redirect("/homeUser");
       }
-        
-    
       console.log("login done");
     });
-  });
-  
- })
+  }
+  else
+  { 
+    var email = req.body.email;
+    sql = `insert into logindata values("${UserID}",(select sha2("${PASS}",512)),"user","${email}")`;
+    con.query(sql ,function (err) {
+    console.log("values inserted");
+    res.redirect("/");
+
+    });
+  } 
+}); 
+ });
 
 
 httpsServer.listen(8443);
