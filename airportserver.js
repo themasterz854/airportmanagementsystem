@@ -256,36 +256,44 @@ app.post("/addDepartureFlight", body('DepartureDate').isAfter(new Date().toStrin
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });}
-  var FC,AN,DT,DD,to,Duration,AL;
+  var FC,AN,DT,DD,to,Duration,AL,FT,LT,NS;
+  FT = req.body.Flighttype;
+  NS = req.body.noofstops;
   AL = req.body.Airline;
   FC = req.body.FlightCode;
   AN = req.body.Airline;
   DT = req.body.DepartureTime;
   DD = req.body.DepartureDate;
   to = req.body.to;
+  LT = req.body.layover;
   Duration = req.body.Duration;
   DD.replace('T', ' ');
   var sql = `select AIRLINE_ID from airline where AL_NAME = "${AL}"`;
-  con.query(sql, function (err, result) {
+   con.query(sql, function (err, result) {
     if (err) 
     {
-      
       throw err;
     }
-   
-    var values = [[FC,AN,null,to,null,DD+" " +DT,Duration,"Departure","NONSTOP",result[0].AIRLINE_ID]];
-     sql = "insert into flight values ?";
-    con.query(sql,[values], function (err) {
+    var values = [[FC,AN,null,to,null,DD+" " +DT,Duration,"Departure",FT,result[0].AIRLINE_ID]];
+    sql = "insert into flight values ?";
+     con.query(sql,[values], function (err) {
       if (err) 
       {
         
         throw err;
       }
-      console.log("values inserted");
-      res.redirect("/addDepartureFlight");
+      var sql2;
+      if(FT === "Connecting")
+        sql2= `insert into connecting values("${FC}","${LT}",${NS})`;
+      else sql2= `insert into nonstop values("${FC}")`;
+        con.query(sql2, function(err)
+        {
+          if(err) throw err;
+          console.log("values inserted");
+          res.redirect("/addDepartureFlight");
+        });
     });
-    });
-
+  });
 });
 
 app.post("/deletedeparture",(req,res) => {
@@ -314,14 +322,26 @@ app.get('/Arrival', (req, res, next) => {
   });
 });
 app.get("/Departure", (req,res) => {
-  var sql = "SELECT FlightCode,Airline,Destination,DATE_FORMAT(Departure,'%d %m %y') as DepartureDate,TIME_FORMAT(Departure,'%h:%i %p') as DepartureTime from FLIGHT where Status='Departure'";
+  var sql = `SELECT FlightCode,Airline,Destination,DATE_FORMAT(Departure,"%d-%m-%y") as DepartureDate,TIME_FORMAT(Departure,'%h:%i %p') as DepartureTime,FlightType from FLIGHT where Status="Departure"`;
   con.query(sql, function(err, data, fields) {
   if (err) throw err;
   if(adminlog === 1)
   data.isadmin = "yes";
   else
   data.isadmin === "no";
-  res.render('Departure', { title: 'Departure', DepartureData: data});
+  sql = `SELECT layover_time as LT,no_of_stops as NS from connecting where FlightCode="${data[0].FlightCode}"`;
+  con.query(sql, function(err, subdata, fields) {
+    if (err) throw err;
+    if(subdata.length === 0)
+    {
+    }
+    else
+    {
+    data[0].LT = subdata[0].LT;
+    data[0].NS = subdata[0].NS;
+    }
+    res.render('Departure', { title: 'Departure', DepartureData: data});
+  });
   });
 });
 
@@ -441,6 +461,8 @@ app.get("/payment",(req,res) => {
 });
 
 app.post("/payment",body("CardNumber").isCreditCard(), (req,res) => {
+
+
 });
 app.get("/ticketDetails", (req,res) => {
 res.sendFile(absolutepathofhtml+"/passenger/ticketDetails.html");

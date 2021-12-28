@@ -70,7 +70,9 @@
                                     <th>To</th>
                                     <th>Departure Date</th>
                                     <th>Departure Time</th>
-                                   
+                                    <th>Flight Type</th>
+                                    <th>Layover Time</th>
+                                    <th>No of stops</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -86,7 +88,10 @@
                                     <td><%=data.Destination %></td>
                                     <td><%=data.DepartureDate %></td>
                                     <td><%=data.DepartureTime %></td>
-                                    
+                                    <td><%=data.FlightType %></td>
+                                    <td><%=data.LT %></td>
+                                    <td><%=data.NS %></td>
+
                                 </tr>
                                 <%  i++; }) %>
                                 <% } else{ %>
