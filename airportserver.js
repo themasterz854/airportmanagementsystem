@@ -199,23 +199,35 @@ app.post("/addArrivalFlight", body('ArrivalDate').isAfter(new Date().toString())
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });}
   var FC,AN,AT,AD,From;
+  AL = req.body.Airline;
   FC = req.body.FlightCode;
   AN = req.body.Airline;
   AT = req.body.ArrivalTime;
   AD = req.body.ArrivalDate;
   From = req.body.From;
   AD.replace('T', ' ');
-  var values = [[FC,AN,From,null,AD+" " +AT,null,null,"Arrival","NONSTOP"]];
-  var sql = "insert into flight values ?";
-  con.query(sql,[values], function (err, result) {
+
+  var sql = `select AIRLINE_ID from airline where AL_NAME = "${AL}"`;
+  con.query(sql, function (err, result) {
     if (err) 
     {
       
       throw err;
     }
-    console.log("values inserted");
-    res.redirect("/addArrivalFlight");
-  });
+   
+    var values = [[FC,AN,From,null,AD+" " +AT,null,null,"Arrival","NONSTOP",result[0].AIRLINE_ID]];
+     sql = "insert into flight values ?";
+    con.query(sql,[values], function (err) {
+      if (err) 
+      {
+        
+        throw err;
+      }
+      console.log("values inserted");
+      res.redirect("/addArrivalFlight");
+    });
+    });
+  
 });
 app.post("/deletearrival",(req,res) => {
     var FC = req.body.FC;
@@ -244,7 +256,8 @@ app.post("/addDepartureFlight", body('DepartureDate').isAfter(new Date().toStrin
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });}
-  var FC,AN,DT,DD,to,Duration;
+  var FC,AN,DT,DD,to,Duration,AL;
+  AL = req.body.Airline;
   FC = req.body.FlightCode;
   AN = req.body.Airline;
   DT = req.body.DepartureTime;
@@ -252,17 +265,27 @@ app.post("/addDepartureFlight", body('DepartureDate').isAfter(new Date().toStrin
   to = req.body.to;
   Duration = req.body.Duration;
   DD.replace('T', ' ');
-  var values = [[FC,AN,null,to,null,DD+" " +DT,Duration,"Departure","NONSTOP"]];
-  var sql = "insert into flight values ?";
-  con.query(sql,[values], function (err, result) {
+  var sql = `select AIRLINE_ID from airline where AL_NAME = "${AL}"`;
+  con.query(sql, function (err, result) {
     if (err) 
     {
       
       throw err;
     }
-    console.log("values inserted");
-    res.redirect("/addDepartureFlight");
-  });
+   
+    var values = [[FC,AN,null,to,null,DD+" " +DT,Duration,"Departure","NONSTOP",result[0].AIRLINE_ID]];
+     sql = "insert into flight values ?";
+    con.query(sql,[values], function (err) {
+      if (err) 
+      {
+        
+        throw err;
+      }
+      console.log("values inserted");
+      res.redirect("/addDepartureFlight");
+    });
+    });
+
 });
 
 app.post("/deletedeparture",(req,res) => {
@@ -312,7 +335,7 @@ app.get("/booking", (req,res) => {
 function executequeryt(sql,PID,TN,FC,DOBooking,DOT,SeatNo,Class,TOT)
 {
   sql = 'insert into ticket (PID,Ticket_Number,Date_of_booking,Date_of_travel,Date_of_cancellation,SeatNo,Class) values ?';
-  var Source,Destination;
+  var Source,Destination,Price;
   values = [[PID,TN,DOBooking,DOT,null,SeatNo,Class]];
   
   con.query(sql,[values], function (err, result) {
@@ -332,6 +355,17 @@ function executequeryt(sql,PID,TN,FC,DOBooking,DOT,SeatNo,Class,TOT)
       }
       Source = result[0].Source;
       Destination=result[0].Destination;
+      switch(Destination)
+      {
+        case "New York" :Price = 226;
+        break;
+        case "Paris" : Price = 160;
+        break;
+        case "London": Price = 533;
+        break;
+      }
+      if(Class === "Business")
+      Price = 1.5* Price;
       con.query(`update ticket set Source="${Source}",Destination="${Destination}" where PID=${PID}`, function (err, result) {
         if (err) 
         {
@@ -340,7 +374,7 @@ function executequeryt(sql,PID,TN,FC,DOBooking,DOT,SeatNo,Class,TOT)
         }
        
         }); 
-        con.query(`insert into carries values(${PID}, "${FC}")`, function (err, result) {
+        con.query(`insert into carries values(${PID}, "${FC}");insert into books values("${DOBooking}","${Source}","${Destination}","${Class}",${Price})`, function (err, result) {
           if (err) 
           {
             
@@ -354,7 +388,7 @@ app.post("/booking", body('SeatNo').isFloat({min: 1 , max: 450}),(req,res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });}
-  var PID,FC,Class,TN,Source,Destination,DOBooking,DOT,DOC,SeatNo,TOT;
+  var PID,FC,Class,TN,DOBooking,DOT,SeatNo,TOT;
   console.log(req.body);
   PID = req.body.PID;
   FC = req.body.FlightCode;
@@ -413,16 +447,42 @@ res.sendFile(absolutepathofhtml+"/passenger/ticketDetails.html");
 
 });
 app.post("/ticketDetails", (req,res) => {
-  var sql = `select Ticket_Number,Source,Destination,Class,SeatNo,DATE_FORMAT(Date_of_booking,"%d %m %y") as DOBOOK,DATE_FORMAT(Date_of_travel,"%d %m %y") as DOT,(select Flightcode from carries where pid=${req.body.PIDT}) as FC,(select TIME_FORMAT(Departure,"%r") from flight where flightcode=(select flightcode from carries where PID=${req.body.PIDT})) as DepartureTime from ticket where PID=${req.body.PIDT}`;
-  con.query(sql, function (err, data) {
+  var sql = `select Ticket_Number,Destination,Class,SeatNo,DATE_FORMAT(Date_of_booking,"%d-%m-%y") as DOBOOK,DATE_FORMAT(Date_of_travel,"%d %m %y") as DOT,(select Flightcode from carries where pid=${req.body.PIDT}) as FC,(select TIME_FORMAT(Departure,"%r") from flight where flightcode=(select flightcode from carries where PID=${req.body.PIDT})) as DepartureTime from ticket where PID=${req.body.PIDT} AND Date_of_cancellation is null`;
+  con.query(sql, async function (err, data) {
     if (err) 
     {
       
       throw err;
     }
+    if(data.length === 0)
+    {   res.render("ticketDetails.ejs", {title:"Ticket", TicketData: []}); }
+    
+    else if(data[0].FC === null)
+    { 
+      var sqlq;
+      sqlq = `update ticket set Date_of_cancellation= CURDATE() where Ticket_Number=${data[0].Ticket_Number};insert into cancels values(CURDATE(),50,(select PID from ticket where Ticket_Number= ${data[0].Ticket_Number}))`;
+      await con.query(sqlq,function (err) {
+        if (err) 
+        { 
+          
+        }
+        console.log("ticket deleted");
+      });
+      res.render("ticketDetails.ejs", {title:"Ticket", TicketData: []});
+    }
+    sql = `select Price from books where Date_of_booking=(select DATE(Date_of_booking) from ticket where pid=${req.body.PIDT}) and Destination= "${data[0].Destination}" and Class= "${data[0].Class}"`;
+    con.query(sql, function (err,Pricedata) {
+      if (err) 
+      {
+        
+        throw err;
+      }
+      console.log(Pricedata);
+      data[0].Price = Pricedata[0].Price;
+      console.log(data[0].Price);
     res.render("ticketDetails", {title:"Ticket", TicketData:data});
+    });
     }); 
-  
   
 });
 
@@ -431,7 +491,8 @@ app.post("/deleteticket",(req,res) => {
   var TN = req.body.TN;
   console.log(TN);
   var sqlq;
-  sqlq = `delete from ticket where Ticket_Number=${TN}`;
+  sqlq = `update ticket set Date_of_cancellation= CURDATE() where Ticket_Number=${TN};insert into cancels values(CURDATE(),50,(select PID from ticket where Ticket_Number= ${TN}))`;
+  //sqlq = `delete from ticket where Ticket_Number=${TN}`;
   con.query(sqlq, function (err) {
     if (err) 
     { 
@@ -588,7 +649,16 @@ res.send(`your pid is ${pid} , Please note it down, it will only appear this onc
 }); 
  });
 
+app.get("/logout", (req,res) => {
 
+  
+  if(adminlog === 1)
+  {
+    adminlog = 0;
+  }
+
+  res.redirect("/");
+});
 httpsServer.listen(8443);
 
 console.log("Server listening https on port 8443");

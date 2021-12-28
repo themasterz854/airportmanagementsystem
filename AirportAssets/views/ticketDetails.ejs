@@ -73,14 +73,13 @@
                                         <th>S. no</th>
                                         <th>FlightCode</th>
                                         <th>Ticket Number</th>
-                                        <th>From</th>
                                         <th>To</th>
                                         <th>Date of booking</th>
                                         <th>Date of travel</th>
                                         <th>Departure Time</th>
-                                        <th>Date of Cancellation</th>
                                         <th>Class</th>
                                         <th>Seat No</th>
+                                        <th>Price</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -93,15 +92,13 @@
                                         <td><%=i; %></td>
                                         <td><%=data.FC %></td>
                                         <td><%=data.Ticket_Number %></td>
-                                        <td><%=data.Source %></td>
                                         <td><%=data.Destination %></td>
                                         <td><%=data.DOBOOK %></td>
                                         <td><%=data.DOT %></td>
                                         <td><%=data.DepartureTime %></td>
-                                        <td><%=data.Date_of_Cancellation %></td>
                                         <td><%=data.Class %></td>
                                         <td><%=data.SeatNo %></td>
-                                        
+                                        <td><%=data.Price %></td>
                                     </tr>
                                     <%  i++; }) %>
                                     <% } else{ %>
