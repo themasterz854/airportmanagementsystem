@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Poppins">
 
-    <link rel="stylesheet" href="/public/css/mycss.css">
+    <link rel="stylesheet" href="css/mycss.css">
 </head>
 <style type="text/css">
     label {
@@ -20,7 +20,7 @@
     }
 </style>
 
-<body>
+<body class="background-wrapper">
     <nav class="navbar navbar-inverse" style="border-radius:0px !important; margin:0;border: 0">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -50,7 +50,7 @@
     </nav>
 
 
-    <div class="background-wrapper" style="background-image: url(/254361.jpg);">
+    <div>
 
         <!--header-->
 
@@ -67,7 +67,7 @@
                             <legend style="text-align: center;">Ticket Details</legend>
                         </div>
                         <div class="panel-body">
-                            <table class="table table-hover" style="color: black; font-size: 20px">
+                            <table class="table table-bordered table-hover" style="color: black; font-size: 20px">
                                 <thead>
                                     <tr>
                                         <th>S. no</th>
@@ -103,7 +103,7 @@
                                     <%  i++; }) %>
                                     <% } else{ %>
                                         <tr>
-                                            <td colspan="7">No Data Found</td>
+                                            <td colspan="10">No Data Found</td>
                                         </tr>
                                     <% } %>
                                     </tbody>
@@ -114,17 +114,19 @@
             </div>
         </div>
       
-            <div style=" width:360px ;
-            height: 435px;
-            position: relative;
-            margin: 6% auto;
-            background: #fff;
-            padding: 5px;
-            overflow: hidden ;">
-            <form action="/deleteticket" class="input-group"  method="post" >
-                <input type="number" class="input-field" name="TN" placeholder="Ente the Ticket Number to remove" required>
-                <button type="submit" >Enter the Ticket Number to remove</button></form>
-            </div>
+        <div style=" width:360px ;
+        height: 435px;
+        position: relative;
+        margin: 6% auto;
+        background: none;
+        padding: 5px;
+        overflow: hidden ;">
+        <form action="/deleteticket" class="input-group"  method="post" >
+            <input type="text" style="background: none;color:white;" class="input-field" name="TN" placeholder="Enter the Ticket Number to remove" required>
+            <br style="background:none">
+            <br style="background:none">
+            <button type="submit" style="background:none;color:black" >REMOVE</button></form>
+        </div>
     
         <br>
         <br>

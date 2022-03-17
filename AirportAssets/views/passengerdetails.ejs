@@ -10,9 +10,9 @@
 		<script src="myjs.js"></script>
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 				<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Poppins">
-		<liknk rel="stylesheet" href="css/style.css">
+		<link rel="stylesheet" href="css/mycss.css">
 </head>
-<body>
+<body class="background-wrapper">
 	
     <nav class="navbar navbar-inverse" style="border-radius:0px !important; margin:0;border: 0">
         <div class="container-fluid">
@@ -24,16 +24,19 @@
             </div>
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav">
-					<li><a href="/homeUser">Home</a></li>
+                    <li><a href="/homeUser">Home</a></li>
                     <li><a href="/booking">Booking</a></li>
                     <li><a href="/ticketDetails">Ticket Details</a></li>
                     <li><a href="/addpassengerdetails">Add passenger details</a></li>
                     <li class = "active"><a href="/passengerdetails">Passenger details</a></li>
+                    <li><a href="/Arrival">Arrivals</a></li>
+					<li><a href="/Departure">Departures</a></li>
                     
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="/logout"><span class="glyphicon glyphicon-log-in"></span> Logout</a></a></li>
                 </ul>
+            </nav>
                 <div class="col-sm-8 col-sm-offset-2">
                     <div class="panel-group">
                           <div class="panel panel-default panel-transparent">
@@ -44,15 +47,15 @@
                             <div class="panel-body">
                         <header>
                             <h2>Passenger details</h2>
-                            <hr>
+            
                         </header>
 
 
-                        <div class="panel-body">
+                        
 							<form class="input-group" method="post">
-								<input type="text" class="input-field" name="formpid" placeholder="Enter your PID" required>
-								<button type="submit" class="submit-btn">Get details</button></form>
-                            <table class="table table-hover" style="color: black; font-size: 20px">
+								<input type="text" class="input-field" style="color:black;background: none;"name="formpid" placeholder="Enter your PID" required>
+								<button type="submit" style="color: black;" class="submit-btn">Get details</button></form>
+                            <table class="table table-hover table-bordered" style="color: black; font-size: 20px;">
                                 <thead>
                                     <tr>
                                         <th>PID</th>
@@ -93,7 +96,7 @@
                                 <% } %>
                                 </tbody>
                           </table>
-                        </div>
+            
                         
 
                        
@@ -105,6 +108,6 @@
                 
             </div>	
         </div>
-    </nav>
+        
 </body>
 </html>

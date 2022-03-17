@@ -4,7 +4,14 @@
 
 		}
 
-
+::placeholder{
+	color:white;
+}
+table,th,td,tbody,tr,thead{
+	border: 2px solid black;
+	border-collapse: collapse; 
+	/* background: none; */
+}
 
 .carousel-caption {
     top: 20% !important;
@@ -57,15 +64,15 @@
 
 
 
-
+ 
 
 
 
 	.background-wrapper {
-			background-color: #000;
-			color: #bfbfbf;
-			
-			background-size: cover;
+			 background-color: #000; 
+			color: #bfbfbf; 
+			background-image: url(../backg.jpg);
+			background-size: cover; 
 			background-attachment: fixed;
 			background-position: center;
 			position: relative;

@@ -63,7 +63,7 @@ app.get("/addEmployee", (req,res) => {
   res.sendFile(absolutepathofhtml+"/admin/addEmployee.html");
 
 });
-app.post("/addEmployee",  body('PhoneNo').isLength(10),body('Age').isFloat({min:0 , max:100}),(req,res) => {
+app.post("/addEmployee",  body('PhoneNo').isLength({min:10,max: 10}),body('Age').isFloat({min:0 , max:100}),(req,res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });}
@@ -570,7 +570,7 @@ function executequery(sql,pid,Fname,Mname,Lname,Age,Sex,Phone,Passport,Address){
     console.log("values inserted");
 });
 }
-app.post("/addpassengerdetails",body('PhoneNo').isLength(10),body('Age').isNumeric({min:0, max:100}),(req,res)=> {
+app.post("/addpassengerdetails",body('PhoneNo').isLength({min:10,max:10}),body('Age').isNumeric({min:0, max:100}),(req,res)=> {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });}

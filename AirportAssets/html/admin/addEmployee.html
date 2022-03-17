@@ -9,9 +9,10 @@
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 				<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Poppins">
-
+        
+                <link rel="stylesheet" href="/css/mycss.css">
 </head>
-<body>
+<body class="background-wrapper ">
     <nav class="navbar navbar-inverse" style="border-radius:0px !important; margin:0;border: 0">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -40,7 +41,7 @@
         </div>
     </nav>
 
-    <div class="background-wrapper">
+    <div>
 				
         <!--header-->
 
@@ -108,7 +109,7 @@
                                     
                                     <div class="input-group">
                                         <label>Phone Number</label>
-                                        <input name="PhoneNo" type="number" placeholder="123456789" class="form-control trans-input-area" required>
+                                        <input name="PhoneNo" minlength="10" maxlength="10" type="number" placeholder="1234567890" class="form-control trans-input-area" required>
                                     </div>
                                 </div>
                                 <br>
