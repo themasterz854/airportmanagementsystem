@@ -1,5 +1,7 @@
 // Requiring module
 var sql = require('mysql');
+var globalrequest;
+var blockid=1;
 var fs = require('fs');
 var mongo = require('mongodb');
 var https = require('https');
@@ -10,7 +12,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 var credentials = {key: privateKey, cert: certificate};
 const express = require('express');
-
+var blockcrypto = require('./cryptocurrency');
 var adminlog = 0;
 // Creating express object
 const app = express();
@@ -22,7 +24,11 @@ var httpsServer = https.createServer(credentials, app);
 app.set('views', __dirname + "\\AirportAssets\\views");
 app.set('view engine', 'ejs');
 
+let smashingCoin = new blockcrypto.CryptoBlockchain();
 
+console.log("smashingCoin mining in progress....");
+
+console.log(JSON.stringify(smashingCoin, null, 4));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static(absolutepathofassets));
@@ -352,49 +358,51 @@ app.get("/booking", (req,res) => {
  res.sendFile(absolutepathofhtml+"/passenger/booking.html");
 });
 
-function executequeryt(sql,PID,TN,FC,DOBooking,DOT,SeatNo,Class,TOT)
-{
-  sql = 'insert into ticket (PID,Ticket_Number,Date_of_booking,Date_of_travel,Date_of_cancellation,SeatNo,Class) values ?';
-  var Source,Destination,Price;
-  values = [[PID,TN,DOBooking,DOT,null,SeatNo,Class]];
+async function calcprice(Destination,Class){
+  var Price;
+  switch(Destination)
+  {
+    case "New York" :Price = 226;
+    break;
+    case "Paris" : Price = 160;
+    break;
+    case "London": Price = 533;
+    break;
+  }
+  if(Class === "Business")
+  Price = 1.5* Price;
+ 
+  return Price;
+}
+async function executequeryt(UserID,PASS)
+{ 
+  var sql1 = globalrequest.sql;
+  var PID = globalrequest.PID;
+  var TN = globalrequest.TN;
+  var FC = globalrequest.FC;
+  var DOBooking = globalrequest.DOBooking;
+  var DOT = globalrequest.DOT;
+  var SeatNo = globalrequest.SeatNo;
+  var Class = globalrequest.Class;
+  var TOT  = globalrequest.TOT;
+  var Source = globalrequest.Source;
+  var Destination= globalrequest.Destination;
+  var Price;
+  sql1 = 'insert into ticket (PID,Ticket_Number,Date_of_booking,Date_of_travel,Date_of_cancellation,SeatNo,Class,Source,Destination) values ?';
   
-  con.query(sql,[values], function (err, result) {
+  values = [[PID,TN,DOBooking,DOT,null,SeatNo,Class,Source,Destination]];
+  console.log(values);
+  con.query(sql1,[values], function (err, result) {
     if (err) 
     {
       throw err;
     }
  
     });
-     sql = `SELECT Source,Destination from flight where FlightCode="${FC}" AND DATE(Departure)="${DOT}" AND TIME(Departure)="${TOT}"`; 
-
-    con.query(sql, function (err, result) {
-      if (err) 
-      {
-        
-        throw err;
-      }
-      Source = result[0].Source;
-      Destination=result[0].Destination;
-      switch(Destination)
-      {
-        case "New York" :Price = 226;
-        break;
-        case "Paris" : Price = 160;
-        break;
-        case "London": Price = 533;
-        break;
-      }
-      if(Class === "Business")
-      Price = 1.5* Price;
-      con.query(`update ticket set Source="${Source}",Destination="${Destination}" where PID=${PID}`, function (err, result) {
-        if (err) 
-        {
-          
-          throw err;
-        }
-       
-        }); 
-        con.query(`insert into carries values(${PID}, "${FC}");insert into books values("${DOBooking}","${Source}","${Destination}","${Class}",${Price})`, function (err, result) {
+    
+      Price = await calcprice(Destination,Class);
+      
+        con.query(`insert into carries values(${PID}, "${FC}");insert into books values("${DOBooking}","${Source}","${Destination}","${Class}",${Price});update logindata set money=money-${Price} where userid="${UserID}" and  Pass=(select sha2("${PASS}",512));update logindata set money=money+${Price} where userid="admin"`, function (err, result) {
           if (err) 
           {
             
@@ -402,16 +410,23 @@ function executequeryt(sql,PID,TN,FC,DOBooking,DOT,SeatNo,Class,TOT)
           }
          
           }); 
-      });  
+     console.log("Function over");
+        
 }
-app.post("/booking", body('SeatNo').isFloat({min: 1 , max: 450}),(req,res) => {
+
+app.post("/booking", body('SeatNo').isFloat({min: 1 , max: 450}),async(req,res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });}
-  var PID,FC,Class,TN,DOBooking,DOT,SeatNo,TOT;
-  console.log(req.body);
+  var PID,FC,Class,TN,DOBooking,DOT,SeatNo,TOT,Source,Destination;
   PID = req.body.PID;
+  
   FC = req.body.FlightCode;
+  var sql6=`select Source,Destination from Flight where FlightCode="${FC}"`;
+  con.query(sql6,function(err,result){
+
+  var Source = result[0].Source;
+  var Destination = result[0].Destination;
   Class = req.body.class;
   var date = new Date();
   var day = ("0" + date.getDate()).slice(-2);
@@ -423,21 +438,21 @@ app.post("/booking", body('SeatNo').isFloat({min: 1 , max: 450}),(req,res) => {
   TOT = req.body.Dtime;
   SeatNo = req.body.SeatNo;
  
-  sql = "select * from ticket";
-   con.query(sql, function (err, result,fields) {
+  sql6 = "select * from ticket";
+    con.query(sql6,  async function (err, result,fields) {
     if (err) 
     { 
     }
     var i;
     //console.log(result,result.length  );
 
-    TN = getRndInteger(1,9999);
+    TN = await getRndInteger(1,9999);
 
       for(i=0;i<result.length;i++)
       {
         if(TN === result[i].Ticket_Number || TN === 0)
         {
-          TN = getRndInteger(1,9999);
+          TN = await getRndInteger(1,9999);
           i = -1;
           continue;
         }
@@ -446,25 +461,51 @@ app.post("/booking", body('SeatNo').isFloat({min: 1 , max: 450}),(req,res) => {
            
          }
         }
-        console.log("TN final = ", TN);
-        executequeryt(sql,PID,TN,FC,DOBooking,DOT,SeatNo,Class,TOT);
+         console.log("TN final = ", TN);
+        globalrequest= {sql:sql6,PID:PID,TN:TN,FC:FC,DOBooking:DOBooking,DOT:DOT,SeatNo:SeatNo,Class:Class,TOT:TOT,Source:Source,Destination:Destination};
   });
- 
-      console.log("ticket values inserted");
-   res.redirect("/homeUser");
+});
+    
+      res.redirect("/payment");
+  //  res.redirect("/homeUser");
 
 });
-app.get("/payment",(req,res) => {
-
-  res.sendFile(absolutepathofhtml+"/passenger/payment.html");
-
+app.get("/payment",async (req,res) => {
+    var Price;
+    Price = await calcprice(globalrequest.Destination,globalrequest.Class);
+  globalrequest.Price = Price;
+  Pricedata=[{"Price": Price}];
+  console.log(JSON.stringify(smashingCoin, null, 4));
+  res.render("payment",{title:"Payment",PriceData:Pricedata})
 });
 
-app.post("/payment",body("CardNumber").isCreditCard(), (req,res) => {
 
+app.post("/payment",async (req,res) => {
+   var pass = req.body.pass;
+   var userid= req.body.userid;
+   await executequeryt(userid,pass); 
+var date_ob = new Date();
+var day = ("0" + date_ob.getDate()).slice(-2);
+var month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+var year = date_ob.getFullYear();
+   
+var date = year + "-" + month + "-" + day;
+console.log(date);
+    
+var hours = date_ob.getHours();
+var minutes = date_ob.getMinutes();
+var seconds = date_ob.getSeconds();
+  
+var dateTime = year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds;
+console.log(dateTime);
+   smashingCoin.addNewBlock(new blockcrypto.CryptoBlock(blockid, dateTime, { sender: userid, recipient: "admin", quantity: globalrequest.Price }));
+   blockid++;
 
-});
-app.get("/ticketDetails", (req,res) => {
+   console.log(JSON.stringify(smashingCoin, null, 4));
+   res.redirect("/ticketDetails");
+  });
+  
+app.get("/ticketDetails", (req,res  ) => {
 res.sendFile(absolutepathofhtml+"/passenger/ticketDetails.html");
 
 });
@@ -483,14 +524,12 @@ app.post("/ticketDetails", (req,res) => {
     { 
       var sqlq;
       sqlq = `update ticket set Date_of_cancellation= CURDATE() where Ticket_Number=${data[0].Ticket_Number};insert into cancels values(CURDATE(),50,(select PID from ticket where Ticket_Number= ${data[0].Ticket_Number}))`;
-      await con.query(sqlq,function (err) {
-        if (err) 
-        { 
-          
+      con.query(sqlq, function (err) {
+        if (err) {
         }
         console.log("ticket deleted");
       });
-      res.render("ticketDetails.ejs", {title:"Ticket", TicketData: []});
+      res.render("ticketDetails", {title:"Ticket", TicketData: []});
     }
     sql = `select Price from books where Date_of_booking=(select DATE(Date_of_booking) from ticket where pid=${req.body.PIDT}) and Destination= "${data[0].Destination}" and Class= "${data[0].Class}"`;
     con.query(sql, function (err,Pricedata) {
