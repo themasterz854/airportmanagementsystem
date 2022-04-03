@@ -418,7 +418,7 @@ app.post("/booking", body('SeatNo').isFloat({min: 1 , max: 450}),async(req,res) 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });}
-  var PID,FC,Class,TN,DOBooking,DOT,SeatNo,TOT,Source,Destination;
+  var PID,FC,Class,TN,DOBooking,DOT,SeatNo,TOT;
   PID = req.body.PID;
   
   FC = req.body.FlightCode;
