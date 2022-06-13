@@ -12,10 +12,10 @@ class CryptoBlock {
   computeHash() {
     return SHA256(
       this.index +
-        this.precedingHash +
-        this.timestamp +
-        JSON.stringify(this.data) +
-        this.nonce
+      this.precedingHash +
+      this.timestamp +
+      JSON.stringify(this.data) +
+      this.nonce
     ).toString();
   }
 
@@ -84,5 +84,5 @@ class CryptoBlockchain {
 // console.log(JSON.stringify(smashingCoin, null, 4));
 
 module.exports = {
-  CryptoBlock,CryptoBlockchain
+  CryptoBlock, CryptoBlockchain
 };
