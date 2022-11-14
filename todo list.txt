@@ -1,9 +1,8 @@
-payment
-
-generate daily reports
+generate daily reports;
+ability to download ticket as pdf;
 
 use faster shorter sql queries like join and all;
-use passport js to make better authentication
-add on delete cascade for passenger1 and passenger2
+use passport js to make better authentication;
+add on delete cascade for passenger1 and passenger2;
 
-add admin authentication by sending admin password with every request;
+add admin authentication by sending admin password with every request or use JWT;

@@ -1,4 +1,5 @@
 // Requiring module
+const compression = require("compression");
 var sql = require('mysql');
 var globalrequest;
 var blockid = 1;
@@ -19,7 +20,7 @@ const app = express();
 const absolutepathofhtml = __dirname + "/AirportAssets/html/";
 const absolutepathofassets = __dirname + '/public';
 const httpsServer = https.createServer(credentials, app);
-
+var cors = require('cors');
 app.set('views', __dirname + "\\AirportAssets\\views");
 app.set('view engine', 'ejs');
 
@@ -31,6 +32,7 @@ console.log(JSON.stringify(smashingCoin, null, 4));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(absolutepathofassets));
+app.use(compression())
 console.log(__dirname);
 //SQL 
 var sqlcondata = {
@@ -62,8 +64,13 @@ con.connect(function (err) {
       console.log(result);
     });
   });
-
-
+  var corsOptions = {
+    origin: 'http://localhost:8001',
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+  } //adds cors requests
+  app.get('/',cors(corsOptions), (req, res) => {
+    res.sendFile(absolutepathofhtml + "/index.html");
+  });
 
   app.get("/addEmployee", (req, res) => {
 
@@ -123,9 +130,7 @@ con.connect(function (err) {
     else
       res.send("NOT AN ADMIN");
   });
-  app.get('/', (req, res) => {
-    res.sendFile(absolutepathofhtml + "/index.html");
-  });
+ 
   app.get("/deleteemployee", (req, res) => {
     if (adminlog === 1) {
       var ssn = req.query.SSND;
@@ -323,6 +328,8 @@ con.connect(function (err) {
         data.isadmin = "yes";
       else
         data.isadmin === "no";
+      if(data.length > 0)
+      {
       sql = `SELECT layover_time as LT,no_of_stops as NS from connecting where FlightCode="${data[0].FlightCode}"`;
       con.query(sql, function (err, subdata, fields) {
         if (err) throw err;
@@ -334,7 +341,11 @@ con.connect(function (err) {
         }
         res.render('Departure', { title: 'Departure', DepartureData: data });
       });
+    }
+    else
+    res.render('Departure', { title: 'Departure', DepartureData: data });
     });
+  
   });
 
   app.get("/homeUser", (req, res) => {

@@ -4,18 +4,19 @@
         "dev": "nodemon airportserver.js"
     },
     "dependencies": {
-        "body-parser": "^1.20.0",
-        "bootstrap": "^5.1.3",
-        "crypto-js": "^4.1.1",
-        "dotenv": "^16.0.0",
-        "ejs": "^3.1.7",
-        "express": "^4.17.3",
-        "express-validator": "^6.14.0",
-        "mongodb": "^4.5.0",
-        "mongoose": "^6.3.0",
-        "mysql": "^2.18.1",
-        "nodemon": "^2.0.15",
-        "npm": "^8.7.0"
+        "body-parser": "latest",
+        "bootstrap": "latest",
+        "compression": "latest",
+        "cors": "latest",
+        "crypto-js": "latest",
+        "dotenv": "latest",
+        "ejs": "latest",
+        "express": "latest",
+        "express-validator": "latest",
+        "mongodb": "latest",
+        "mysql": "latest",
+        "nodemon": "latest",
+        "npm": "latest"
     },
-    "version": "0.1.1"
+    "version": "1.0.0"
 }

@@ -16,7 +16,7 @@ class Rebuild extends ArboristWorkspaceCmd {
     ...super.params,
   ]
 
-  static usage = ['[[<@scope>/]<name>[@<version>] ...]']
+  static usage = ['[<package-spec>] ...]']
 
   // TODO
   /* istanbul ignore next */
@@ -39,7 +39,7 @@ class Rebuild extends ArboristWorkspaceCmd {
       const tree = await arb.loadActual()
       const specs = args.map(arg => {
         const spec = npa(arg)
-        if (spec.type === 'tag' && spec.rawSpec === '') {
+        if (spec.rawSpec === '*') {
           return spec
         }
 
