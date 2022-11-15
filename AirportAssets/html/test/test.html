@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body >
+    <div class="hero">
+        <div class="form-box">
+            <div class="button-box">
+                <button class="toggle-btn" style="background: linear-gradient(to right,#ff105f,#ffad06);border-radius: 30px;" id="loginbutton" type="button" onclick="Login()">Login</button>
+            
+                <button class="toggle-btn" style="border-radius: 30px;" id="registerbutton" type="button" onclick="Register()">Register</button>
+        
+            </div>
+            <form action = "/generateToken" class="input-group" id="Login" method="post" >
+                <input type="text" class="input-field" name="userid" placeholder="User Id" required>
+                <input type="password" class="input-field" name = "pass" placeholder="Password" required>
+                <input type="hidden" name="formName" value="login">
+                <button type="submit" class="submit-btn">Log In</button></form>
+            </form>
+            <form action="/generateToken" class="input-group" id="Register" method="post">
+                <input type="text" name ="email" class="input-field" placeholder="Email ID" required>
+                <input type="text" class="input-field" name="userid" placeholder="User Id" required>
+                <input type="password" name="pass" class="input-field" placeholder="Password" required>
+                <input type="hidden" name="formName" value="register">
+                <button type="submit" class="submit-btn">Register</button>
+            </form>
+
+        </div>
+    </div>
+    <script>
+        var x =document.getElementById("Login");
+        var a = document.getElementById("loginbutton");
+        var y =document.getElementById("Register");
+        var b = document.getElementById("registerbutton");
+        var z =document.getElementById("btn");
+        
+       
+        function initial(){
+            a.style.background = "linear-gradient(to right,#ff105f,#ffad06)"
+            a.style.borderRadius = "30px"
+            a.style.transition =  "0.5s"
+        }
+        function Register(){
+            a.style.background = "transparent"
+            b.style.background = "linear-gradient(to right,#ff105f,#ffad06)"
+            b.style.borderRadius = "30px"           
+            x.style.left = "-400px"
+            y.style.left = "50px"
+            z.style.left = "110px"
+            
+        }
+        function Login(){
+            b.style.background = "transparent"
+            a.style.background = "linear-gradient(to right,#ff105f,#ffad06)"
+            a.style.borderRadius = "30px";
+            x.style.left = "50px"
+            y.style.left = "450px"
+            z.style.left = "0px"
+    
+    
+        }
+    
+    </script>
+    
+</body>
+</html>

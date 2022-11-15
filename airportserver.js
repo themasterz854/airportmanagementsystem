@@ -1,4 +1,7 @@
-// Requiring module
+// Requiring modules
+var cookies = require("cookie-parser")
+var jwt = require('jsonwebtoken');
+var bcrypt = require('bcryptjs');
 const compression = require("compression");
 var sql = require('mysql');
 var globalrequest;
@@ -29,6 +32,7 @@ let smashingCoin = new blockcrypto.CryptoBlockchain();
 console.log("smashingCoin mining in progress....");
 
 console.log(JSON.stringify(smashingCoin, null, 4));
+app.use(cookies());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(absolutepathofassets));
@@ -48,7 +52,7 @@ con.connect(function (err) {
   console.log("Connected to database " + sqlcondata["database"] + "!");
   app.use(function middleware(req, res, next) {
     var string = req.method + " " + req.path + " - " + req.ip;
-    console.debug(string);
+    console.log(string);
     next();
   });
 
@@ -61,7 +65,7 @@ con.connect(function (err) {
     var dbo = db.db("airport");
     dbo.collection("Employee").find({}).toArray(function (err, result) {
       if (err) throw err;
-      console.log(result);
+      //console.log(result);
     });
   });
   var corsOptions = {
@@ -693,6 +697,62 @@ app.get("/logout", (req, res) => {
 
   res.redirect("/");
 });
+
+//TEST AREA
+app.get("/generateToken", (req,res) => {
+  res.sendFile(absolutepathofhtml+ "/test/test.html");
+});
+const jwtExpirySeconds = 300
+app.post("/generateToken", (req, res) => {
+  // Validate User Here
+  // Then generate JWT Token
+  var userid = req.body.userid;
+  var pass = req.body.pass;
+  var email = req.body.email;
+
+  let jwtSecretKey = process.env.JWT_SECRET_KEY;
+  let data = {
+      userid: userid,
+      pass: pass,
+      email: email,
+  };
+
+  const token = jwt.sign(data, jwtSecretKey, {
+		algorithm: "HS256",
+		expiresIn: jwtExpirySeconds,
+	});
+
+  res.cookie("token", token, {maxAge : jwtExpirySeconds * 1000});
+  res.end();
+});
+
+app.get("/validateToken", (req, res) => {
+  // Tokens are generally passed in the header of the request
+  // Due to security reasons.
+  let jwtSecretKey = process.env.JWT_SECRET_KEY;
+  try {
+    
+      const token = req.cookies.token;
+      
+      const verified = jwt.verify(token, jwtSecretKey);
+      if(verified.pass === "admin"){
+          return res.send({"Successfully Verified": true});
+      }else{
+          // Access Denied
+          return res.status(401).send(error);
+      }
+  } catch (error) {
+      // Access Denied
+      console.log("error");
+      return res.status(401).send(error);
+  }
+});
+
+
+
+
+
 httpsServer.listen(8443);
 
 console.log("Server listening https on port 8443");
+

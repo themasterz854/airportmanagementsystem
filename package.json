@@ -4,15 +4,18 @@
         "dev": "nodemon airportserver.js"
     },
     "dependencies": {
+        "bcryptjs": "^2.4.3",
         "body-parser": "latest",
         "bootstrap": "latest",
         "compression": "latest",
+        "cookie-parser": "^1.4.6",
         "cors": "latest",
         "crypto-js": "latest",
         "dotenv": "latest",
         "ejs": "latest",
         "express": "latest",
         "express-validator": "latest",
+        "jsonwebtoken": "^8.5.1",
         "mongodb": "latest",
         "mysql": "latest",
         "nodemon": "latest",
