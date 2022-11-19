@@ -72,14 +72,24 @@ con.connect(function (err) {
     origin: 'http://localhost:8001',
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
   } //adds cors requests
-  app.get('/',cors(corsOptions), (req, res) => {
+  app.get('/', cors(corsOptions), (req, res) => {
+    if(handler.validateToken(req,res))
+    {
+      res.redirect("/Adminhome");
+    }
+    else
     res.sendFile(absolutepathofhtml + "/index.html");
   });
 
   app.get("/addEmployee", (req, res) => {
-
+    if(handler.validateToken(req,res))
+    {
     res.sendFile(absolutepathofhtml + "/admin/addEmployee.html");
-
+    }
+    else
+    {
+      res.send("NOT AN ADMIN");
+    }
   });
   app.post("/addEmployee", body('PhoneNo').isLength({ min: 10, max: 10 }), body('Age').isFloat({ min: 0, max: 100 }), (req, res) => {
     const errors = validationResult(req);
@@ -117,7 +127,7 @@ con.connect(function (err) {
     }
   });
   app.get("/Employee", (req, res) => {
-    if (adminlog === 1) {
+    if (handler.validateToken(req,res)) {
       MongoClient.connect(url, function (err, db) {
         if (err) throw err;
         console.log("Database connected mongodb!");
@@ -134,7 +144,7 @@ con.connect(function (err) {
     else
       res.send("NOT AN ADMIN");
   });
- 
+
   app.get("/deleteemployee", (req, res) => {
     if (adminlog === 1) {
       var ssn = req.query.SSND;
@@ -189,7 +199,7 @@ con.connect(function (err) {
     });
   });
   app.get("/Adminhome", (req, res) => {
-    if (adminlog === 1)
+    if (handler.validateToken(req,res))
       res.sendFile(absolutepathofhtml + "admin/Adminhome.html");
     else {
       res.redirect("/");
@@ -197,7 +207,7 @@ con.connect(function (err) {
   });
 
   app.get("/addArrivalFlight", (req, res) => {
-    if (adminlog === 1) {
+    if (handler.validateToken(req,res)) {
       res.sendFile(absolutepathofhtml + "admin/addArrivalFlight.html");
     }
     else {
@@ -251,7 +261,7 @@ con.connect(function (err) {
     });
   });
   app.get("/addDepartureFlight", (req, res) => {
-    if (adminlog === 1) {
+    if (handler.validateToken(req,res)) {
       res.sendFile(absolutepathofhtml + "admin/addDepartureFlight.html");
     }
     else {
@@ -313,11 +323,12 @@ con.connect(function (err) {
     });
   });
 
-  app.get('/Arrival', (req, res, next) => {
+  app.get('/Arrival', (req, res) => {
+    var isadmin = handler.validateToken(req,res);
     var sql = "SELECT FlightCode,Airline,Source,DATE_FORMAT(Arrival,'%d %m %y') as ArrivalDate,TIME_FORMAT(Arrival,'%h:%i %p') as ArrivalTime from FLIGHT where Status='Arrival'";
     con.query(sql, function (err, data, fields) {
       if (err) throw err;
-      if (adminlog === 1)
+      if (isadmin)
         data.isadmin = "yes";
       else
         data.isadmin === "no";
@@ -325,31 +336,31 @@ con.connect(function (err) {
     });
   });
   app.get("/Departure", (req, res) => {
+    var isadmin = handler.validateToken(req,res);
     var sql = `SELECT FlightCode,Airline,Destination,DATE_FORMAT(Departure,"%d-%m-%y") as DepartureDate,TIME_FORMAT(Departure,'%h:%i %p') as DepartureTime,FlightType from FLIGHT where Status="Departure"`;
     con.query(sql, function (err, data, fields) {
       if (err) throw err;
-      if (adminlog === 1)
+      if (isadmin)
         data.isadmin = "yes";
       else
         data.isadmin === "no";
-      if(data.length > 0)
-      {
-      sql = `SELECT layover_time as LT,no_of_stops as NS from connecting where FlightCode="${data[0].FlightCode}"`;
-      con.query(sql, function (err, subdata, fields) {
-        if (err) throw err;
-        if (subdata.length === 0) {
-        }
-        else {
-          data[0].LT = subdata[0].LT;
-          data[0].NS = subdata[0].NS;
-        }
+      if (data.length > 0) {
+        sql = `SELECT layover_time as LT,no_of_stops as NS from connecting where FlightCode="${data[0].FlightCode}"`;
+        con.query(sql, function (err, subdata, fields) {
+          if (err) throw err;
+          if (subdata.length === 0) {
+          }
+          else {
+            data[0].LT = subdata[0].LT;
+            data[0].NS = subdata[0].NS;
+          }
+          res.render('Departure', { title: 'Departure', DepartureData: data });
+        });
+      }
+      else
         res.render('Departure', { title: 'Departure', DepartureData: data });
-      });
-    }
-    else
-    res.render('Departure', { title: 'Departure', DepartureData: data });
     });
-  
+
   });
 
   app.get("/homeUser", (req, res) => {
@@ -667,7 +678,8 @@ con.connect(function (err) {
           res.send("wrong username or password");
         }
         else if (result[0].Type === "admin") {
-          adminlog = 1;
+          handler.generateToken(req,res);
+          //adminlog = 1;
           res.redirect("/Adminhome");
         }
         else {
@@ -690,67 +702,12 @@ con.connect(function (err) {
 
 app.get("/logout", (req, res) => {
 
-
-  if (adminlog === 1) {
-    adminlog = 0;
-  }
-
+  res.clearCookie('token');
   res.redirect("/");
 });
 
 //TEST AREA
-app.get("/generateToken", (req,res) => {
-  res.sendFile(absolutepathofhtml+ "/test/test.html");
-});
-const jwtExpirySeconds = 300
-app.post("/generateToken", (req, res) => {
-  // Validate User Here
-  // Then generate JWT Token
-  var userid = req.body.userid;
-  var pass = req.body.pass;
-  var email = req.body.email;
-
-  let jwtSecretKey = process.env.JWT_SECRET_KEY;
-  let data = {
-      userid: userid,
-      pass: pass,
-      email: email,
-  };
-
-  const token = jwt.sign(data, jwtSecretKey, {
-		algorithm: "HS256",
-		expiresIn: jwtExpirySeconds,
-	});
-
-  res.cookie("token", token, {maxAge : jwtExpirySeconds * 1000});
-  res.end();
-});
-
-app.get("/validateToken", (req, res) => {
-  // Tokens are generally passed in the header of the request
-  // Due to security reasons.
-  let jwtSecretKey = process.env.JWT_SECRET_KEY;
-  try {
-    
-      const token = req.cookies.token;
-      
-      const verified = jwt.verify(token, jwtSecretKey);
-      if(verified.pass === "admin"){
-          return res.send({"Successfully Verified": true});
-      }else{
-          // Access Denied
-          return res.status(401).send(error);
-      }
-  } catch (error) {
-      // Access Denied
-      console.log("error");
-      return res.status(401).send(error);
-  }
-});
-
-
-
-
+var handler = require('./jwthandler');
 
 httpsServer.listen(8443);
 
