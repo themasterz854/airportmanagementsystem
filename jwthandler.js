@@ -1,4 +1,4 @@
-const jwtExpirySeconds = 300;
+const jwtExpirySeconds = 60 * 10;
 var jwt = require('jsonwebtoken');
 function generateToken(req, res) {
     // Validate User Here
@@ -34,12 +34,10 @@ function validateToken(req, res) {
             return false;
         }
         const verified = jwt.verify(token, jwtSecretKey);
-        if (verified.pass === "admin") {
-            return true;
-        } else {
-            // Access Denied
-            return false;
+        if (verified) {
+            return verified;
         }
+        
     } catch (error) {
         // Access Denied
         console.log("error");
