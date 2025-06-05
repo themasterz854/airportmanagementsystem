@@ -2,8 +2,8 @@
     "scripts": {
         "start": "node airportserver.js",
         "dev": "nodemon airportserver.js",
-        "startservers": "net start MYSQL80 && net start MongoDB",
-        "stop": "net stop MYSQL80 & ; net stop MongoDB &"
+        "startservers": "net start MYSQL93 && net start MongoDB",
+        "stop": "net stop MYSQL93 & ; net stop MongoDB &"
     },
     "dependencies": {
         "bcryptjs": "latest",
@@ -19,7 +19,7 @@
         "express-validator": "latest",
         "jsonwebtoken": "latest",
         "mongodb": "latest",
-        "mysql": "latest",
+        "mysql2": "latest",
         "nodemon": "latest",
         "npm": "latest"
     },
