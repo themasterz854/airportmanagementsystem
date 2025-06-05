@@ -1,7 +1,7 @@
 // Requiring modules
 var cookies = require("cookie-parser");
 const compression = require("compression");
-var sql = require("mysql");
+var sql = require("mysql2");
 var globalrequest;
 var blockid = 1;
 const fs = require("fs");
@@ -68,9 +68,10 @@ client
     var dbo = db.db("airport");
     var collection = dbo.collection("Employee");
     collection.find({}).toArray().then(
-      (result) => { console.log(result)
+      (result) => {
+        console.log(result)
       })
-      .catch( (err) => {throw error});
+      .catch((err) => { throw error });
   })
   .catch((err) => {
     throw err;
@@ -138,13 +139,13 @@ app.post(
         JobType: Jobtype,
         Address: Addr,
       };
-        var dbo = db.db("airport");
-        dbo.collection("Employee").insertOne(edata, function (err) {
-          if (err) throw err;
-          console.log("employee inserted");
-          res.redirect("/addEmployee");
-        });
-     
+      var dbo = db.db("airport");
+      dbo.collection("Employee").insertOne(edata, function (err) {
+        if (err) throw err;
+        console.log("employee inserted");
+        res.redirect("/addEmployee");
+      });
+
     }
     res.send("NOT AN ADMIN");
   }
@@ -157,10 +158,10 @@ app.get("/Employee", (req, res) => {
       .collection("Employee")
       .find({})
       .toArray().then(
-        (data) =>  {
+        (data) => {
           res.render("Employee", { title: "employee", EmployeeData: data });
         })
-        .catch((err) => {throw err});
+      .catch((err) => { throw err });
   } else res.send("NOT AN ADMIN");
 });
 
@@ -171,11 +172,11 @@ app.get("/deleteemployee", (req, res) => {
     var dbo = db.db("airport");
     var myquery = { SSN: ssn };
     dbo.collection("Employee").deleteOne(myquery).then(
-      (obj) => {console.log("document deleted");}
+      (obj) => { console.log("document deleted"); }
     )
-    .catch((err)=> {throw err});
+      .catch((err) => { throw err });
   }
-  else {res.send("NOT AN ADMIN")};
+  else { res.send("NOT AN ADMIN") };
 
   res.redirect("/Employee");
 });
@@ -746,17 +747,18 @@ app.post("/", (req, res) => {
   var UserID, PASS, sql;
   UserID = req.body.userid;
   PASS = req.body.pass;
-
+  console.log("here" , UserID,PASS);
   if (req.body.formName === "login") {
     sql = `SELECT UserID,Pass,Type FROM LOGINDATA WHERE UserID="${UserID}" AND Pass=(select sha2("${PASS}",512))`;
     con.query(sql, function (err, result, fields) {
       if (err) {
       }
+  
       handler.generateToken(req, res);
       if (result.length === 0) {
         res.send("wrong username or password");
       } else if (result[0].Type === "admin") {
-    
+
         res.redirect("/Adminhome");
       } else {
         res.redirect("/homeUser");
